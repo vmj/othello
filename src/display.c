@@ -66,7 +66,6 @@ oth_display_init(int *argc, char **argv)
         glEnable(GL_LIGHT0);
         glEnable(GL_LIGHT1);
         glEnable(GL_NORMALIZE);
-        glEnable(GL_POLYGON_SMOOTH);
 
         /* Setup lighting */
         light0_position[0] = RANKS * SQUARESIZE;
@@ -172,7 +171,6 @@ oth_display_init(int *argc, char **argv)
         quad = gluNewQuadric();
         gluQuadricOrientation(quad, GLU_OUTSIDE);
         gluQuadricDrawStyle(quad, GLU_FILL);
-        gluQuadricNormals(quad, GLU_SMOOTH);
 
         glNewList(DISK, GL_COMPILE);
         glMaterialfv(GL_FRONT, GL_AMBIENT, dark_ambient);

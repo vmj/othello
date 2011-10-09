@@ -95,8 +95,6 @@ __oth_init(int *argc, char **argv)
         }
 
         /* OpenGL initialization */
-        glClearColor(0.0, 0.0, 0.0, 0.0);
-        glShadeModel(GL_SMOOTH);
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
