@@ -80,7 +80,6 @@ __oth_init(int *argc, char **argv)
                 oth_board_free();
                 oth_flippers_free();
                 oth_camera_free();
-                oth_shift_free();
                 __oth_help(-1);
         }
 
@@ -90,6 +89,7 @@ __oth_init(int *argc, char **argv)
                 oth_board_free();
                 oth_flippers_free();
                 oth_camera_free();
+                oth_display_free();
                 __oth_help(-1);
         }
 
