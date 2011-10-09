@@ -16,8 +16,6 @@ main(int argc, char **argv)
         /* Use GLUT to create a window for drawing */
         glutInit(&argc, argv);
         glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-        glutInitWindowSize(400, 400);
-        glutInitWindowPosition(100, 150);
         glutCreateWindow("Othello");
 
         /* Define the callback functions */
