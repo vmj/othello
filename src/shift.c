@@ -6,7 +6,7 @@
 #include "comp.h"
 #include "board.h"
 #include "flippers.h"
-#include "input.h"
+#include "user.h"
 #include "shift.h"
 
 void __oth_shift_game_over();
@@ -192,7 +192,6 @@ oth_shift_reset()
         }
         else
         {                       /* shift == NONE, Game Over animation done. */
-                glutKeyboardFunc(oth_keyboard); /* Allow user to ESC */
                 fprintf(stderr, "Game Over!\n");
         }
 }
@@ -302,7 +301,6 @@ void
 __shift_set_user(void)
 {
         glutMouseFunc(oth_mouse);
-        glutKeyboardFunc(oth_keyboard);
 }
 
 /**
@@ -312,5 +310,4 @@ void
 __shift_unset_user(void)
 {
         glutMouseFunc(NULL);
-        glutKeyboardFunc(NULL); /* [FIXME] Also disables ESC */
 }

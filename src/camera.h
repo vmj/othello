@@ -1,6 +1,8 @@
 #ifndef _OTHELLO_CAMERA_H_
 #define _OTHELLO_CAMERA_H_
 
+#include "common.h"
+
 /* Structure to control viewing parameters. Angles are relative to center of
  * the board and controlled via arrow keys.
  */

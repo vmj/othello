@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <GL/glut.h>
 #include "display.h"
-#include "input.h"
+#include "keyboard.h"
 #include "board.h"
 #include "flippers.h"
 #include "camera.h"
@@ -24,6 +24,7 @@ main(int argc, char **argv)
         glutDisplayFunc(oth_display);
         glutReshapeFunc(oth_reshape);
         glutSpecialFunc(oth_special_keys);
+        glutKeyboardFunc(oth_keyboard);
 
         /* Initialize globals */
         __oth_init(&argc, argv);
