@@ -1,7 +1,7 @@
 #ifndef _OTHELLO_BOARD_H_
 #define _OTHELLO_BOARD_H_
 #include "common.h"
-#include "flippers.h" // Flipper
+#include "flippers.h"           // Flipper
 
 /* Disks are all the same, so their color is here separately. Also shift info
  * uses this.
@@ -10,9 +10,9 @@ typedef enum { NONE, DARK, LIGHT } Color;
 
 /* One square on the board. */
 typedef struct {
-  Color    color;
-  Bool     flipping;
-  Flipper *flipper;
+        Color color;
+        Bool flipping;
+        Flipper *flipper;
 } Square;
 
 /* Serves as a measure of unit, more than anything else. */
@@ -32,8 +32,8 @@ int FILES;
 
 /*  */
 struct Score {
-  int dark;
-  int light;
+        int dark;
+        int light;
 } *score;
 
 /* Indexes of the "best" moves */
@@ -49,10 +49,10 @@ int best_light;
 #define board(rank, file)    (board[ index((rank), (file)) ])
 #define score(rank, file)    (score[ index((rank), (file)) ])
 
-Bool oth_board_init (int *argc, char **argv);
-void oth_board_free ();
-void oth_board_reset ();
+Bool oth_board_init(int *argc, char **argv);
+void oth_board_free();
+void oth_board_reset();
 
-void oth_board_flip_disks (int rank, int file);
+void oth_board_flip_disks(int rank, int file);
 
-#endif /* _OTHELLO_BOARD_H_ */
+#endif                          /* _OTHELLO_BOARD_H_ */

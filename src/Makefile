@@ -17,6 +17,13 @@ clean:
 distclean: clean
 	-@rm othello 2>/dev/null || true
 
+# Linux style, except -bl instead of -br, -nce instead of -ce, -ci8
+# instead of -ci4, -l74 instead of -l80, and -psl instead of -npsl.
+# Also, added -nut and -bli0.
+indent:
+	@indent -npro -linux -bl -nce -ci8 -l74 -psl -nut -bli0 *.[hc]
+	$(MAKE) clean
+
 depend:
 	makedepend -Y. -- $(CFLAGS) -- $(SRC)
 

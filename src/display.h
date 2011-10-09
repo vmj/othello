@@ -14,13 +14,13 @@ GLfloat dark_diffuse[4];
 GLfloat dark_specular[4];
 GLfloat light_ambient[4];
 GLfloat light_diffuse[4];
-GLfloat light_specular[4];  
+GLfloat light_specular[4];
 
-Bool oth_display_init (int *argc, char **argv);
-void oth_display_free ();
-void oth_display_reset ();
+Bool oth_display_init(int *argc, char **argv);
+void oth_display_free();
+void oth_display_reset();
 
-void oth_display (void);
-void oth_reshape (int width, int height);
+void oth_display(void);
+void oth_reshape(int width, int height);
 
-#endif /* _OTHELLO_DISPLAY_H_ */
+#endif                          /* _OTHELLO_DISPLAY_H_ */
