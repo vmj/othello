@@ -26,6 +26,7 @@ indent:
 
 depend:
 	makedepend -Y. -- $(CFLAGS) -- $(SRC)
+	rm Makefile.bak
 
 # DO NOT DELETE
 
