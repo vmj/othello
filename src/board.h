@@ -23,7 +23,7 @@ Square *board;
 
 /* Limits for board size. */
 #define BOARD_SIZE_MIN  4
-#define BOARD_SIZE_MAX 25
+#define BOARD_SIZE_MAX 98
 #define BOARD_SIZE_DEF  8
 
 /* Actual board size. User can define them using -r and -f options. */
