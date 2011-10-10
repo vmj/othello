@@ -150,7 +150,6 @@ oth_shift_reset()
         glutIdleFunc(NULL);
 
         oth_board_reset();
-        oth_flippers_reset();
 
         if (shift == DARK)
         {
@@ -158,10 +157,12 @@ oth_shift_reset()
                 if (best_light >= 0)
                 {
                         shift = LIGHT;
+                        oth_flippers_reset();
                         __shift_set_light();
                 }
                 else if (best_dark >= 0)
                 {
+                        oth_flippers_reset();
                         __shift_set_dark();
                 }
                 else
@@ -177,10 +178,12 @@ oth_shift_reset()
                 if (best_dark >= 0)
                 {
                         shift = DARK;
+                        oth_flippers_reset();
                         __shift_set_dark();
                 }
                 else if (best_light >= 0)
                 {
+                        oth_flippers_reset();
                         __shift_set_light();
                 }
                 else

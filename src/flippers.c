@@ -119,11 +119,13 @@ oth_flippers_reset()
                 {
                         if (shift == DARK)
                         {
-                                flippers[i].diffuse[j] = dark_diffuse[j];
+                                /* We're going to flip light to dark */
+                                flippers[i].diffuse[j] = light_diffuse[j];
                         }
                         else if (shift == LIGHT)
                         {
-                                flippers[i].diffuse[j] = light_diffuse[j];
+                                /* We're going to flip dark to light */
+                                flippers[i].diffuse[j] = dark_diffuse[j];
                         }
                         else
                         {       /* NONE (Game Over) */
