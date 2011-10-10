@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <GL/glut.h>
 #include "common.h"
 #include "camera.h"
