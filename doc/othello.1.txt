@@ -1,0 +1,114 @@
+othello(1)
+===========
+
+NAME
+----
+othello - asd
+
+SYNOPSIS
+--------
+[verse]
+'othello' [-2] [-p PRECISION] [-r RANKS] [-f FILES]
+'othello' [-h]
+
+DESCRIPTION
+-----------
+Othello is a board game for two players.
+
+Objective of the game is to conquer the board with your color. Players
+place disks on the board in turn such that they trap at least on of
+the opponents' disks between their own disks. Those trapped disks are
+turned upside down so that they change color. If the player can't
+place a disk on the board, shift is transfered to the opponent. If
+neither player can play, game is over.  Player with more disks is the
+winner.
+
+OPTIONS
+-------
+othello(1) accepts following options.
+
+-2::
+        Enable human versus human mode.  Default is human versus
+        computer mode.  In the default mode, it is randomized which
+        plays the dark disks.  Unlike in Chess, in Othello dark player
+        begins.
+
+-p PRECISION::
+        Specify how precise the flipping animation should be.  by
+        default, it's calculated as a function of the board size.
+
+-r RANKS::
+        Specify the board size, or just how many ranks there should be
+        if also -f is given.
+
+-f FILES::
+        Specify the board size, or just how many files there should be
+        if also -r is given.
+
+-h::
+        Print a help message with more information on the limits for
+        above options.
+
+Also, following options are supported for controlling the window.
+
+-display DISPLAY::
+        Specify the X server to connect to. If not specified, the
+        value of the DISPLAY environment variable is used.
+
+-geometry WxH+X+Y::
+
+        Determines where window should be created on the screen. The
+        parameter following -geometry should be formatted as a
+        standard X geometry specification.
+        +
+        Note that this is only advisory, as the window manager is
+        really in control.
+
+-iconic::
+        Requests all top-level windows be created in an iconic state.
+
+-indirect::
+        Force the use of indirect OpenGL rendering contexts.
+
+-direct::
+        Force the use of direct OpenGL rendering contexts (not all GLX
+        implementations support direct rendering contexts). A fatal
+        error is generated if direct rendering is not supported by the
+        OpenGL implementation.
+        +
+        If neither -indirect or -direct are used to force a particular
+        behavior, Othello will attempt to use direct rendering if
+        possible and otherwise fallback to indirect rendering.
+
+-gldebug::
+        After processing callbacks and/or events, check if there are
+        any OpenGL errors by calling glGetError. If an error is
+        reported, print out a warning by looking up the error code
+        with gluErrorString. Using this option is helpful in detecting
+        OpenGL run-time errors.
+
+-sync::
+        Enable synchronous X protocol transactions. This option makes
+        it easier to track down potential X protocol errors.
+
+INTERACTION
+-----------
+Disks are placed on the board with mouse.  Just click the square you
+want to place the disk.  If nothing happens, it is either not your
+turn or disk cannot be placed into that square.
+
+You can move the camera around the board to some extent using the
+arrow keys.
+
+ESC quits the game.
+
+AUTHOR
+------
+Original author and current maintainer: mailto:vmj@linuxbox.fi[Mikko Värri].
+
+This game was originally written late 2003 for a Computer Graphics at
+Aston University, Birmingham, UK.
+
+COPYRIGHT
+---------
+GNU GPLv3
