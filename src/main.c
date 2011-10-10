@@ -126,14 +126,16 @@ __oth_help(int exitcode)
                 "        Specify the board size (or just how many ranks\n");
         fprintf(stderr,
                 "        there should be, if also -f is given).\n");
-        fprintf(stderr, "        An even value between (inclusive) %i and %i.\n",
+        fprintf(stderr,
+                "        An even value between (inclusive) %i and %i.\n",
                 BOARD_SIZE_MIN, BOARD_SIZE_MAX);
         fprintf(stderr, "    -f NUM\n");
         fprintf(stderr,
                 "        Specify the board size (or just how many files\n");
         fprintf(stderr,
                 "        there should be, if also -r is given).\n");
-        fprintf(stderr, "        An even value between (inclusive) %i and %i.\n",
+        fprintf(stderr,
+                "        An even value between (inclusive) %i and %i.\n",
                 BOARD_SIZE_MIN, BOARD_SIZE_MAX);
         exit(exitcode);
 }
