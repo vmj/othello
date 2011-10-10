@@ -40,6 +40,7 @@ oth_board_init(int *argc, char **argv)
                                 rank = CLAMP(BOARD_SIZE_MIN,
                                              atoi(argv[i]),
                                              BOARD_SIZE_MAX);
+                                rank -= rank % 2;
                                 break;
                         case 'f':      /* files */
                                 if (++i > *argc)
@@ -51,6 +52,7 @@ oth_board_init(int *argc, char **argv)
                                 file = CLAMP(BOARD_SIZE_MIN,
                                              atoi(argv[i]),
                                              BOARD_SIZE_MAX);
+                                file -= file % 2;
                                 break;
                         }
                         break;

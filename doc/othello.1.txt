@@ -39,11 +39,11 @@ othello(1) accepts following options.
 
 -r RANKS::
         Specify the board size, or just how many ranks there should be
-        if also -f is given.
+        if also -f is given.  The value should be an even number.
 
 -f FILES::
         Specify the board size, or just how many files there should be
-        if also -r is given.
+        if also -r is given.  The value should be an even number.
 
 -h::
         Print a help message with more information on the limits for
