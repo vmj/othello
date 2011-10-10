@@ -3,7 +3,7 @@
 #include "common.h"
 
 /* Controls how many step the animation has (for one disk) */
-#define PRECISION_MIN    10
+#define PRECISION_MIN     1
 #define PRECISION_MAX   180
 
 /* This controls the flipping animation. */
