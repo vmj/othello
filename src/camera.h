@@ -33,8 +33,8 @@ struct Camera {
 #define V_ANGLE_MIN              0
 #define V_ANGLE_MAX              89
 
-#define H_ANGLE_MIN              90
-#define H_ANGLE_MAX              270
+#define H_ANGLE_MIN              0
+#define H_ANGLE_MAX              360
 
 #define V_ANGLE_INCREMENT        1
 #define H_ANGLE_INCREMENT_MIN    1      /* when looking from V_ANGLE_MIN */
