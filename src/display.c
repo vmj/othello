@@ -31,14 +31,14 @@ GLfloat light1_cutoff = 180;
 
 /* Materials (board) */
 GLfloat boardD_ambient[] = { 0.10, 0.25, 0.10, 1.0 };
-GLfloat boardD_diffuse[] = { 0.20, 0.85, 0.20, 1.0 };
-GLfloat boardD_specular[] = { 0.20, 0.45, 0.20, 1.0 };
+GLfloat boardD_diffuse[] = { 0.00, 0.00, 0.00, 1.0 };
+GLfloat boardD_specular[] = { 0.00, 0.00, 0.00, 1.0 };
 
 GLfloat boardD_shininess = 0.0;
 
 GLfloat boardL_ambient[] = { 0.10, 0.30, 0.10, 1.0 };
-GLfloat boardL_diffuse[] = { 0.20, 0.90, 0.20, 1.0 };
-GLfloat boardL_specular[] = { 0.20, 0.50, 0.20, 1.0 };
+GLfloat boardL_diffuse[] = { 0.00, 0.00, 0.00, 1.0 };
+GLfloat boardL_specular[] = { 0.00, 0.00, 0.00, 1.0 };
 
 GLfloat boardL_shininess = 0.0;
 
