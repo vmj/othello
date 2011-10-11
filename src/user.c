@@ -3,6 +3,7 @@
 #include "camera.h"
 #include "shift.h"
 #include "display.h"
+#include "board.h"
 #include "user.h"
 
 /**

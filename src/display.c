@@ -235,7 +235,7 @@ oth_display(void)
                         {
 
                                 i = index(rank, file);
-                                if (board[i].color == NONE)
+                                if (board[i].disk == EMPTY)
                                         continue;
 
                                 glPushMatrix();
@@ -261,14 +261,14 @@ oth_display(void)
                                 /* Draw disk (stationary) */
                                 else
                                 {
-                                        if (board[i].color == DARK)
+                                        if (board[i].disk == BLACK)
                                         {
                                                 glMaterialfv(GL_FRONT,
                                                              GL_DIFFUSE,
                                                              dark_diffuse);
                                         }
                                         else
-                                        {       /* LIGHT */
+                                        {       /* WHITE */
                                                 glMaterialfv(GL_FRONT,
                                                              GL_DIFFUSE,
                                                              light_diffuse);
@@ -296,7 +296,7 @@ oth_display(void)
 
                                 i = index(rank, file);
 
-                                if (board[i].color != NONE)
+                                if (board[i].disk != EMPTY)
                                         continue;
                                 if (shift == LIGHT && score[i].light == 0)
                                         continue;

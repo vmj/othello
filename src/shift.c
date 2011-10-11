@@ -96,7 +96,7 @@ oth_shift_valid(int rank, int file)
 {
         int i = index(rank, file);
 
-        if (board[i].color != NONE)
+        if (board[i].disk != EMPTY)
                 return false;
         if (shift == DARK && score[i].dark == 0)
                 return false;
@@ -118,7 +118,7 @@ oth_shift_update(int rank, int file)
         if (!oth_shift_valid(rank, file))
                 return;
 
-        board(rank, file).color = shift;
+        board(rank, file).disk = (shift == DARK ? BLACK : WHITE);
         oth_board_flip_disks(rank, file);
 
         switch (shift)
@@ -213,14 +213,14 @@ __oth_shift_game_over()
         {
                 for (file = 0; file < FILES; ++file)
                 {
-                        switch (board(rank, file).color)
+                        switch (board(rank, file).disk)
                         {
-                        case NONE:
+                        case EMPTY:
                                 break;
-                        case DARK:
+                        case BLACK:
                                 darks++;
                                 break;
-                        case LIGHT:
+                        case WHITE:
                                 lights++;
                                 break;
                         }
@@ -236,15 +236,15 @@ __oth_shift_game_over()
         {
                 for (file = 0; file < FILES; ++file)
                 {
-                        switch (board(rank, file).color)
+                        switch (board(rank, file).disk)
                         {
-                        case NONE:
+                        case EMPTY:
                                 break;
-                        case DARK:
+                        case BLACK:
                                 if (darks == 0)
                                 {
                                         /* turn it to light */
-                                        board(rank, file).color = LIGHT;
+                                        board(rank, file).disk = WHITE;
                                         board(rank, file).flipping = true;
                                         board(rank, file).flipper =
                                                 &flippers[1];
@@ -256,11 +256,11 @@ __oth_shift_game_over()
                                         darks--;
                                 }
                                 break;
-                        case LIGHT:
+                        case WHITE:
                                 if (darks > 0)
                                 {
                                         /* turn it to dark */
-                                        board(rank, file).color = DARK;
+                                        board(rank, file).disk = BLACK;
                                         board(rank, file).flipping = true;
                                         board(rank, file).flipper =
                                                 &flippers[0];

@@ -9,7 +9,7 @@ extern int last_used_flipper;
 inline void __board_update_scores(int rank, int file);
 inline void __board_update_scores_d(int rank, int file, int r_inc,
                                     int f_inc);
-inline void __board_flip_disks_d(Color c, int rank, int file, int r_inc,
+inline void __board_flip_disks_d(int disk, int rank, int file, int r_inc,
                                  int f_inc);
 
 /**
@@ -77,7 +77,7 @@ oth_board_init(int *argc, char **argv)
                 return false;
         while (--i >= 0)
         {
-                board[i].color = NONE;
+                board[i].disk = EMPTY;
         }
 
         /* Initialize score */
@@ -87,10 +87,10 @@ oth_board_init(int *argc, char **argv)
                 return false;
 
         /* Set starting positions */
-        board(RANKS / 2, FILES / 2).color = LIGHT;
-        board(RANKS / 2, FILES / 2 - 1).color = DARK;
-        board(RANKS / 2 - 1, FILES / 2).color = DARK;
-        board(RANKS / 2 - 1, FILES / 2 - 1).color = LIGHT;
+        board(RANKS / 2, FILES / 2).disk = WHITE;
+        board(RANKS / 2, FILES / 2 - 1).disk = BLACK;
+        board(RANKS / 2 - 1, FILES / 2).disk = BLACK;
+        board(RANKS / 2 - 1, FILES / 2 - 1).disk = WHITE;
 
         /* Initialize scores and flipper pointers */
         oth_board_reset();
@@ -131,7 +131,7 @@ oth_board_reset()
                         score[i].dark = 0;
 
                         /* Update scores and "bests" */
-                        if (board[i].color == NONE)
+                        if (board[i].disk == EMPTY)
                         {
                                 __board_update_scores(rank, file);
 
@@ -181,19 +181,19 @@ __board_update_scores_d(int rank, int file, int r_inc, int f_inc)
         while (r >= 0 && r < RANKS && f >= 0 && f < FILES
                && (no_darks || no_lights))
         {
-                switch (board(r, f).color)
+                switch (board(r, f).disk)
                 {
-                case NONE:
+                case EMPTY:
                         goto DONE;      /* break away */
                         break;
-                case DARK:
+                case BLACK:
                         no_darks = false;
                         if (no_lights)
                                 ++score_light;
                         r += r_inc;
                         f += f_inc;
                         break;
-                case LIGHT:
+                case WHITE:
                         no_lights = false;
                         if (no_darks)
                                 ++score_dark;
@@ -216,28 +216,28 @@ __board_update_scores_d(int rank, int file, int r_inc, int f_inc)
 void
 oth_board_flip_disks(int rank, int file)
 {
-        Color c = board(rank, file).color;
+        int disk = board(rank, file).disk;
 
         last_used_flipper = 0;
 
-        if (c == NONE)
+        if (disk == EMPTY)
                 return;
 
-        __board_flip_disks_d(c, rank, file, 1, 0);      /* N  */
-        __board_flip_disks_d(c, rank, file, 1, 1);      /* NE */
-        __board_flip_disks_d(c, rank, file, 0, 1);      /* E  */
-        __board_flip_disks_d(c, rank, file, -1, 1);     /* SE */
-        __board_flip_disks_d(c, rank, file, -1, 0);     /* S  */
-        __board_flip_disks_d(c, rank, file, -1, -1);    /* SW */
-        __board_flip_disks_d(c, rank, file, 0, -1);     /* W  */
-        __board_flip_disks_d(c, rank, file, 1, -1);     /* NW */
+        __board_flip_disks_d(disk, rank, file, 1, 0);      /* N  */
+        __board_flip_disks_d(disk, rank, file, 1, 1);      /* NE */
+        __board_flip_disks_d(disk, rank, file, 0, 1);      /* E  */
+        __board_flip_disks_d(disk, rank, file, -1, 1);     /* SE */
+        __board_flip_disks_d(disk, rank, file, -1, 0);     /* S  */
+        __board_flip_disks_d(disk, rank, file, -1, -1);    /* SW */
+        __board_flip_disks_d(disk, rank, file, 0, -1);     /* W  */
+        __board_flip_disks_d(disk, rank, file, 1, -1);     /* NW */
 }
 
 /**
  * Helper function for above. Does it in one direction.
  */
 inline void
-__board_flip_disks_d(Color c, int rank, int file, int r_inc, int f_inc)
+__board_flip_disks_d(int disk, int rank, int file, int r_inc, int f_inc)
 {
         int flipper;
         register int i;
@@ -249,12 +249,12 @@ __board_flip_disks_d(Color c, int rank, int file, int r_inc, int f_inc)
         while (r >= 0 && r < RANKS && f >= 0 && f < FILES)
         {
                 i = index(r, f);
-                if (board[i].color == c)
+                if (board[i].disk == disk)
                 {
                         found = 1;
                         break;  /* Got it! */
                 }
-                if (board[i].color == NONE)
+                if (board[i].disk == EMPTY)
                         return; /* Found empty before same */
 
                 r += r_inc;
@@ -268,9 +268,9 @@ __board_flip_disks_d(Color c, int rank, int file, int r_inc, int f_inc)
         r = rank + r_inc;
         f = file + f_inc;
         i = index(r, f);
-        while (board[i].color != c)
+        while (board[i].disk != disk)
         {
-                board[i].color = c;
+                board[i].disk = disk;
                 board[i].flipping = true;
                 board[i].flipper = &flippers[flipper];
 

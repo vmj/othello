@@ -3,14 +3,9 @@
 #include "common.h"
 #include "flippers.h"           // Flipper
 
-/* Disks are all the same, so their color is here separately. Also shift info
- * uses this.
- */
-typedef enum { NONE, DARK, LIGHT } Color;
-
 /* One square on the board. */
 typedef struct {
-        Color color;
+        enum { EMPTY, BLACK, WHITE } disk;
         Bool flipping;
         Flipper *flipper;
 } Square;
