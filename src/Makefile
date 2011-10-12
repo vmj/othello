@@ -1,5 +1,8 @@
+DESTDIR ?=
+PREFIX ?= /usr/local
+BINDIR ?= $(PREFIX)/bin
 
-CC:=gcc
+CC ?= gcc
 
 SRC = $(wildcard *.c)
 HDR = $(filter-out $(SRC:.c=.h),$(wildcard *.h))
@@ -16,6 +19,11 @@ clean:
 
 distclean: clean
 	-@rm othello 2>/dev/null || true
+
+dist:
+
+install: all
+	cp othello $(DESTDIR)$(BINDIR)/othello
 
 # Linux style, except -bl instead of -br, -nce instead of -ce, -ci8
 # instead of -ci4, -l74 instead of -l80, and -psl instead of -npsl.
