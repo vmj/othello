@@ -31,6 +31,26 @@ GLfloat light1_specular[] = { 1.00, 1.00, 1.00, 1.0 };
 GLfloat light1_cutoff = 50;
 GLfloat light1_exponent = 40.0;
 
+GLfloat light2_position[] = { 0.00, 0.00, 0.00, 1.0 };
+GLfloat light2_direction[] = { 0.00, 0.00, 0.00 };
+
+GLfloat light2_ambient[] = { 0.60, 0.60, 0.60, 1.0 };
+GLfloat light2_diffuse[] = { 0.60, 0.60, 0.60, 1.0 };
+GLfloat light2_specular[] = { 0.00, 0.00, 0.00, 1.0 };
+
+GLfloat light2_cutoff = 50;
+GLfloat light2_exponent = 40.0;
+
+GLfloat light3_position[] = { 0.00, 0.00, 0.00, 1.0 };
+GLfloat light3_direction[] = { 0.00, 0.00, 0.00 };
+
+GLfloat light3_ambient[] = { 0.60, 0.60, 0.60, 1.0 };
+GLfloat light3_diffuse[] = { 0.60, 0.60, 0.60, 1.0 };
+GLfloat light3_specular[] = { 0.00, 0.00, 0.00, 1.0 };
+
+GLfloat light3_cutoff = 50;
+GLfloat light3_exponent = 40.0;
+
 /* Fog */
 GLfloat fog_density = 0.2;
 GLfloat fog_color[] = { 0.00, 0.00, 0.00, 0.00 };
@@ -73,6 +93,8 @@ oth_display_init(int *argc, char **argv)
         glEnable(GL_LIGHTING);
         glEnable(GL_LIGHT0);
         glEnable(GL_LIGHT1);
+        glEnable(GL_LIGHT2);
+        glEnable(GL_LIGHT3);
         glEnable(GL_NORMALIZE);
 
         /* Setup lighting */
@@ -103,6 +125,34 @@ oth_display_init(int *argc, char **argv)
         glLightfv(GL_LIGHT1, GL_SPECULAR, light1_specular);
         glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, light1_cutoff);
         glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, light1_exponent);
+
+        light2_position[0] = RANKS * SQUARESIZE;
+        light2_position[1] = cam.radius.y;
+        light2_position[2] = 0.0;
+
+        light2_direction[0] = -light2_position[0] / 4;
+        light2_direction[1] = -light2_position[1];
+        light2_direction[2] = light2_position[2] / 4;
+
+        glLightfv(GL_LIGHT2, GL_AMBIENT, light2_ambient);
+        glLightfv(GL_LIGHT2, GL_DIFFUSE, light2_diffuse);
+        glLightfv(GL_LIGHT2, GL_SPECULAR, light2_specular);
+        glLightf(GL_LIGHT2, GL_SPOT_CUTOFF, light2_cutoff);
+        glLightf(GL_LIGHT2, GL_SPOT_EXPONENT, light2_exponent);
+
+        light3_position[0] = 0.0;
+        light3_position[1] = cam.radius.y;
+        light3_position[2] = FILES * SQUARESIZE;
+
+        light3_direction[0] = light3_position[0] / 4;
+        light3_direction[1] = -light3_position[1];
+        light3_direction[2] = -light3_position[2] / 4;
+
+        glLightfv(GL_LIGHT3, GL_AMBIENT, light3_ambient);
+        glLightfv(GL_LIGHT3, GL_DIFFUSE, light3_diffuse);
+        glLightfv(GL_LIGHT3, GL_SPECULAR, light3_specular);
+        glLightf(GL_LIGHT3, GL_SPOT_CUTOFF, light3_cutoff);
+        glLightf(GL_LIGHT3, GL_SPOT_EXPONENT, light3_exponent);
 
         /* Create displaylist for board */
         glNewList(BOARD, GL_COMPILE);
@@ -254,6 +304,10 @@ oth_display(void)
                 glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, light0_direction);
                 glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
                 glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, light1_direction);
+                glLightfv(GL_LIGHT2, GL_POSITION, light2_position);
+                glLightfv(GL_LIGHT2, GL_SPOT_DIRECTION, light2_direction);
+                glLightfv(GL_LIGHT3, GL_POSITION, light3_position);
+                glLightfv(GL_LIGHT3, GL_SPOT_DIRECTION, light3_direction);
 
                 glCallList(BOARD);
 
