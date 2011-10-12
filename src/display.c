@@ -11,32 +11,34 @@
 #define DISK  2
 
 /* Lights */
-GLfloat light0_position[4];
+GLfloat light0_position[] = { 0.00, 0.00, 0.00, 1.0 };
+GLfloat light0_direction[] = { 0.00, 0.00, 0.00 };
 
-GLfloat light0_direction[] = { 0.0, -1.0, 0.0 };
-GLfloat light0_ambient[] = { 1.00, 1.00, 1.00, 1.0 };
-GLfloat light0_diffuse[] = { 1.00, 1.00, 1.00, 1.0 };
+GLfloat light0_ambient[] = { 0.80, 0.80, 0.80, 1.0 };
+GLfloat light0_diffuse[] = { 0.80, 0.80, 0.80, 1.0 };
 GLfloat light0_specular[] = { 1.00, 1.00, 1.00, 1.0 };
 
-GLfloat light0_cutoff = 180;
+GLfloat light0_cutoff = 30;
+GLfloat light0_exponent = 30.0;
 
-GLfloat light1_position[4];
+GLfloat light1_position[] = { 0.00, 0.00, 0.00, 1.0 };
+GLfloat light1_direction[] = { 0.00, 0.00, 0.00 };
 
-GLfloat light1_direction[] = { 0.0, 1.0, 0.0 };
-GLfloat light1_ambient[] = { 0.50, 0.50, 0.50, 1.0 };
-GLfloat light1_diffuse[] = { 0.50, 0.50, 0.50, 1.0 };
-GLfloat light1_specular[] = { 0.00, 0.00, 0.00, 1.0 };
+GLfloat light1_ambient[] = { 0.80, 0.80, 0.80, 1.0 };
+GLfloat light1_diffuse[] = { 0.80, 0.80, 0.80, 1.0 };
+GLfloat light1_specular[] = { 1.00, 1.00, 1.00, 1.0 };
 
-GLfloat light1_cutoff = 180;
+GLfloat light1_cutoff = 30;
+GLfloat light1_exponent = 30.0;
 
 /* Materials (board) */
-GLfloat boardD_ambient[] = { 0.10, 0.25, 0.10, 1.0 };
+GLfloat boardD_ambient[] = { 0.10, 0.35, 0.10, 1.0 };
 GLfloat boardD_diffuse[] = { 0.00, 0.00, 0.00, 1.0 };
 GLfloat boardD_specular[] = { 0.00, 0.00, 0.00, 1.0 };
 
 GLfloat boardD_shininess = 0.0;
 
-GLfloat boardL_ambient[] = { 0.10, 0.30, 0.10, 1.0 };
+GLfloat boardL_ambient[] = { 0.15, 0.45, 0.15, 1.0 };
 GLfloat boardL_diffuse[] = { 0.00, 0.00, 0.00, 1.0 };
 GLfloat boardL_specular[] = { 0.00, 0.00, 0.00, 1.0 };
 
@@ -59,7 +61,8 @@ GLfloat disk_shininess = 128.0;
 Bool
 oth_display_init(int *argc, char **argv)
 {
-        float r, f;
+        const int k = CLAMP(0, 50, SQUARESIZE);
+        float r, f, i, j;
         int rank, file;
         GLUquadric *quad;
         glEnable(GL_LIGHTING);
@@ -71,33 +74,39 @@ oth_display_init(int *argc, char **argv)
         light0_position[0] = RANKS * SQUARESIZE;
         light0_position[1] = cam.radius.y;
         light0_position[2] = FILES * SQUARESIZE;
-        light0_position[3] = 0.0;
+
+        light0_direction[0] = -light0_position[0] / 4;
+        light0_direction[1] = -light0_position[1];
+        light0_direction[2] = -light0_position[2] / 4;
 
         glLightfv(GL_LIGHT0, GL_AMBIENT, light0_ambient);
         glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_diffuse);
         glLightfv(GL_LIGHT0, GL_SPECULAR, light0_specular);
-        glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, light0_direction);
         glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, light0_cutoff);
+        glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, light0_exponent);
 
         light1_position[0] = 0.0;
-        light1_position[1] = -cam.radius.y;
+        light1_position[1] = cam.radius.y;
         light1_position[2] = 0.0;
-        light1_position[3] = 0.0;
+
+        light1_direction[0] = (RANKS * SQUARESIZE) / 4;
+        light1_direction[1] = -light1_position[1];
+        light1_direction[2] = (FILES * SQUARESIZE) / 4;
 
         glLightfv(GL_LIGHT1, GL_AMBIENT, light1_ambient);
         glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_diffuse);
         glLightfv(GL_LIGHT1, GL_SPECULAR, light1_specular);
-        glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, light1_direction);
         glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, light1_cutoff);
+        glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, light1_exponent);
 
         /* Create displaylist for board */
         glNewList(BOARD, GL_COMPILE);
 
         /* Light squares */
-        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, boardL_ambient);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, boardL_diffuse);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, boardL_specular);
-        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, boardL_shininess);
+        glMaterialfv(GL_FRONT, GL_AMBIENT, boardL_ambient);
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, boardL_diffuse);
+        glMaterialfv(GL_FRONT, GL_SPECULAR, boardL_specular);
+        glMaterialf(GL_FRONT, GL_SHININESS, boardL_shininess);
         glBegin(GL_QUADS);
         for (rank = 0; rank < RANKS; rank += 2)
         {
@@ -105,20 +114,21 @@ oth_display_init(int *argc, char **argv)
                 for (file = 0; file < FILES; file += 2)
                 {
                         f = file * SQUARESIZE;
-                        glVertex3f(r, -DISKHEIGHT, f);
-                        glVertex3f(r, -DISKHEIGHT, f + SQUARESIZE);
-                        glVertex3f(r + SQUARESIZE, -DISKHEIGHT,
-                                   f + SQUARESIZE);
-                        glVertex3f(r + SQUARESIZE, -DISKHEIGHT, f);
+                        for (i = 0; i < SQUARESIZE; i += k)
+                        {
+                                for (j = 0; j < SQUARESIZE; j += k)
+                                {
+                                        glVertex3f(r + i    , -DISKHEIGHT, f + j    );
+                                        glVertex3f(r + i    , -DISKHEIGHT, f + j + k);
+                                        glVertex3f(r + i + k, -DISKHEIGHT, f + j + k);
+                                        glVertex3f(r + i + k, -DISKHEIGHT, f + j    );
 
-                        glVertex3f(r + SQUARESIZE, -DISKHEIGHT,
-                                   f + SQUARESIZE);
-                        glVertex3f(r + SQUARESIZE, -DISKHEIGHT,
-                                   f + SQUARESIZE * 2);
-                        glVertex3f(r + SQUARESIZE * 2, -DISKHEIGHT,
-                                   f + SQUARESIZE * 2);
-                        glVertex3f(r + SQUARESIZE * 2, -DISKHEIGHT,
-                                   f + SQUARESIZE);
+                                        glVertex3f(r + i     + SQUARESIZE, -DISKHEIGHT, f + j     + SQUARESIZE);
+                                        glVertex3f(r + i     + SQUARESIZE, -DISKHEIGHT, f + j + k + SQUARESIZE);
+                                        glVertex3f(r + i + k + SQUARESIZE, -DISKHEIGHT, f + j + k + SQUARESIZE);
+                                        glVertex3f(r + i + k + SQUARESIZE, -DISKHEIGHT, f + j     + SQUARESIZE);
+                                }
+                        }
                 }
         }
         glEnd();
@@ -135,35 +145,37 @@ oth_display_init(int *argc, char **argv)
                 for (file = 0; file < FILES; file += 2)
                 {
                         f = file * SQUARESIZE;
-                        glVertex3f(r + SQUARESIZE, -DISKHEIGHT, f);
-                        glVertex3f(r + SQUARESIZE, -DISKHEIGHT,
-                                   f + SQUARESIZE);
-                        glVertex3f(r + SQUARESIZE * 2, -DISKHEIGHT,
-                                   f + SQUARESIZE);
-                        glVertex3f(r + SQUARESIZE * 2, -DISKHEIGHT, f);
+                        for (i = 0; i < SQUARESIZE; i += k)
+                        {
+                                for (j = 0; j < SQUARESIZE; j += k)
+                                {
+                                        glVertex3f(r + i     + SQUARESIZE, -DISKHEIGHT, f + j    );
+                                        glVertex3f(r + i     + SQUARESIZE, -DISKHEIGHT, f + j + k);
+                                        glVertex3f(r + i + k + SQUARESIZE, -DISKHEIGHT, f + j + k);
+                                        glVertex3f(r + i + k + SQUARESIZE, -DISKHEIGHT, f + j    );
 
-                        glVertex3f(r, -DISKHEIGHT, f + SQUARESIZE);
-                        glVertex3f(r, -DISKHEIGHT, f + SQUARESIZE * 2);
-                        glVertex3f(r + SQUARESIZE, -DISKHEIGHT,
-                                   f + SQUARESIZE * 2);
-                        glVertex3f(r + SQUARESIZE, -DISKHEIGHT,
-                                   f + SQUARESIZE);
+                                        glVertex3f(r + i    , -DISKHEIGHT, f + j     + SQUARESIZE);
+                                        glVertex3f(r + i    , -DISKHEIGHT, f + j + k + SQUARESIZE);
+                                        glVertex3f(r + i + k, -DISKHEIGHT, f + j + k + SQUARESIZE);
+                                        glVertex3f(r + i + k, -DISKHEIGHT, f + j     + SQUARESIZE);
+                                }
+                        }
                 }
         }
         glEnd();
+
         /* Sides (with dark material) */
         glBegin(GL_QUAD_STRIP);
-        glVertex3f(0.0, -DISKHEIGHT, 0.0);
-        glVertex3f(0.0, -DISKHEIGHT - 20, 0.0);
-        glVertex3f(0.0, -DISKHEIGHT, FILES * SQUARESIZE);
-        glVertex3f(0.0, -DISKHEIGHT - 20, FILES * SQUARESIZE);
-        glVertex3f(RANKS * SQUARESIZE, -DISKHEIGHT, FILES * SQUARESIZE);
-        glVertex3f(RANKS * SQUARESIZE, -DISKHEIGHT - 20,
-                   FILES * SQUARESIZE);
-        glVertex3f(RANKS * SQUARESIZE, -DISKHEIGHT, 0.0);
+        glVertex3f(0.0               , -DISKHEIGHT     , 0.0);
+        glVertex3f(0.0               , -DISKHEIGHT - 20, 0.0);
+        glVertex3f(0.0               , -DISKHEIGHT     , FILES * SQUARESIZE);
+        glVertex3f(0.0               , -DISKHEIGHT - 20, FILES * SQUARESIZE);
+        glVertex3f(RANKS * SQUARESIZE, -DISKHEIGHT     , FILES * SQUARESIZE);
+        glVertex3f(RANKS * SQUARESIZE, -DISKHEIGHT - 20, FILES * SQUARESIZE);
+        glVertex3f(RANKS * SQUARESIZE, -DISKHEIGHT     , 0.0);
         glVertex3f(RANKS * SQUARESIZE, -DISKHEIGHT - 20, 0.0);
-        glVertex3f(0.0, -DISKHEIGHT, 0.0);
-        glVertex3f(0.0, -DISKHEIGHT - 20, 0.0);
+        glVertex3f(0.0               , -DISKHEIGHT     , 0.0);
+        glVertex3f(0.0               , -DISKHEIGHT - 20, 0.0);
         glEnd();
         glEndList();
 
@@ -178,7 +190,7 @@ oth_display_init(int *argc, char **argv)
         glMaterialf(GL_FRONT, GL_SHININESS, disk_shininess);
         glTranslatef(SQUARESIZE / 2, 0.0, SQUARESIZE / 2);
         glScalef(1.0, DISKSQUASH, 1.0);
-        gluSphere(quad, DISKRADIUS, 12, 12);
+        gluSphere(quad, DISKRADIUS, 24, 24);
         glEndList();
 
         return true;
@@ -225,7 +237,9 @@ oth_display(void)
         if (mode[0] == GL_RENDER)
         {
                 glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
+                glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, light0_direction);
                 glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+                glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, light1_direction);
 
                 glCallList(BOARD);
 
