@@ -49,6 +49,9 @@ othello(1) accepts following options.
         Print a help message with more information on the limits for
         above options.
 
+-v::
+        Print the version information and exit.
+
 Also, following options are supported for controlling the window.
 
 -display DISPLAY::

@@ -7,9 +7,11 @@
 #include "flippers.h"
 #include "camera.h"
 #include "shift.h"
+#include "version.h"
 
 void __oth_init(int *argc, char **argv);
 void __oth_help(int exitcode);
+void __oth_version();
 
 int
 main(int argc, char **argv)
@@ -47,6 +49,9 @@ __oth_init(int *argc, char **argv)
                         {
                         case 'h':      /* help */
                                 __oth_help(0);
+                                break;
+                        case 'v':      /* version */
+                                __oth_version();
                                 break;
                         }
                         break;
@@ -139,4 +144,18 @@ __oth_help(int exitcode)
                 "        An even value between (inclusive) %i and %i.\n",
                 BOARD_SIZE_MIN, BOARD_SIZE_MAX);
         exit(exitcode);
+}
+
+/** void oth_version()
+ *
+ */
+void
+__oth_version()
+{
+        printf("othello %s\n", program_version);
+        printf("Copyright (C) 2011 Mikko Värri.\n");
+        printf("License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n");
+        printf("This is free software: you are free to change and redistribute it.\n");
+        printf("There is NO WARRANTY, to the extent permitted by law.\n");
+        exit(0);
 }

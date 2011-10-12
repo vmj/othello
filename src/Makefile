@@ -37,5 +37,6 @@ flippers.o: common.h board.h flippers.h display.h shift.h
 comp.o: board.h common.h flippers.h shift.h comp.h
 camera.o: board.h common.h flippers.h camera.h
 main.o: display.h common.h keyboard.h board.h flippers.h camera.h shift.h
+main.o: version.h
 board.o: common.h board.h flippers.h
 keyboard.o: common.h camera.h keyboard.h
