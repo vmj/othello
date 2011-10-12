@@ -3,7 +3,7 @@ othello(1)
 
 NAME
 ----
-othello - asd
+othello - OpenGL Othello game
 
 SYNOPSIS
 --------
@@ -16,7 +16,7 @@ DESCRIPTION
 Othello is a board game for two players.
 
 Objective of the game is to conquer the board with your color. Players
-place disks on the board in turn such that they trap at least on of
+place disks on the board in turn such that they trap at least one of
 the opponents' disks between their own disks. Those trapped disks are
 turned upside down so that they change color. If the player can't
 place a disk on the board, shift is transfered to the opponent. If
