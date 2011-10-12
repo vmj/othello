@@ -14,22 +14,26 @@
 GLfloat light0_position[] = { 0.00, 0.00, 0.00, 1.0 };
 GLfloat light0_direction[] = { 0.00, 0.00, 0.00 };
 
-GLfloat light0_ambient[] = { 0.80, 0.80, 0.80, 1.0 };
-GLfloat light0_diffuse[] = { 0.80, 0.80, 0.80, 1.0 };
+GLfloat light0_ambient[] = { 0.90, 0.90, 0.90, 1.0 };
+GLfloat light0_diffuse[] = { 0.90, 0.90, 0.90, 1.0 };
 GLfloat light0_specular[] = { 1.00, 1.00, 1.00, 1.0 };
 
-GLfloat light0_cutoff = 30;
-GLfloat light0_exponent = 30.0;
+GLfloat light0_cutoff = 50;
+GLfloat light0_exponent = 40.0;
 
 GLfloat light1_position[] = { 0.00, 0.00, 0.00, 1.0 };
 GLfloat light1_direction[] = { 0.00, 0.00, 0.00 };
 
-GLfloat light1_ambient[] = { 0.80, 0.80, 0.80, 1.0 };
-GLfloat light1_diffuse[] = { 0.80, 0.80, 0.80, 1.0 };
+GLfloat light1_ambient[] = { 0.90, 0.90, 0.90, 1.0 };
+GLfloat light1_diffuse[] = { 0.90, 0.90, 0.90, 1.0 };
 GLfloat light1_specular[] = { 1.00, 1.00, 1.00, 1.0 };
 
-GLfloat light1_cutoff = 30;
-GLfloat light1_exponent = 30.0;
+GLfloat light1_cutoff = 50;
+GLfloat light1_exponent = 40.0;
+
+/* Fog */
+GLfloat fog_density = 0.2;
+GLfloat fog_color[] = { 0.00, 0.00, 0.00, 0.00 };
 
 /* Materials (board) */
 GLfloat boardD_ambient[] = { 0.10, 0.35, 0.10, 1.0 };
@@ -61,6 +65,7 @@ GLfloat disk_shininess = 128.0;
 Bool
 oth_display_init(int *argc, char **argv)
 {
+        const int h = 100000;
         const int k = CLAMP(0, 50, SQUARESIZE);
         float r, f, i, j;
         int rank, file;
@@ -165,18 +170,27 @@ oth_display_init(int *argc, char **argv)
         glEnd();
 
         /* Sides (with dark material) */
-        glBegin(GL_QUAD_STRIP);
-        glVertex3f(0.0               , -DISKHEIGHT     , 0.0);
-        glVertex3f(0.0               , -DISKHEIGHT - 20, 0.0);
-        glVertex3f(0.0               , -DISKHEIGHT     , FILES * SQUARESIZE);
-        glVertex3f(0.0               , -DISKHEIGHT - 20, FILES * SQUARESIZE);
-        glVertex3f(RANKS * SQUARESIZE, -DISKHEIGHT     , FILES * SQUARESIZE);
-        glVertex3f(RANKS * SQUARESIZE, -DISKHEIGHT - 20, FILES * SQUARESIZE);
-        glVertex3f(RANKS * SQUARESIZE, -DISKHEIGHT     , 0.0);
-        glVertex3f(RANKS * SQUARESIZE, -DISKHEIGHT - 20, 0.0);
-        glVertex3f(0.0               , -DISKHEIGHT     , 0.0);
-        glVertex3f(0.0               , -DISKHEIGHT - 20, 0.0);
-        glEnd();
+        glEnable(GL_FOG);
+        glFogi(GL_FOG_MODE, GL_LINEAR);
+        glFogfv(GL_FOG_COLOR, fog_color);
+        glFogf(GL_FOG_START, cam.radius.y);
+        glFogf(GL_FOG_END, cam.radius.y * 2);
+        for (i = 0; i < h; i += k)
+        {
+                glBegin(GL_QUAD_STRIP);
+                glVertex3f(0.0               , -DISKHEIGHT - i    , 0.0);
+                glVertex3f(0.0               , -DISKHEIGHT - i - k, 0.0);
+                glVertex3f(0.0               , -DISKHEIGHT - i    , FILES * SQUARESIZE);
+                glVertex3f(0.0               , -DISKHEIGHT - i - k, FILES * SQUARESIZE);
+                glVertex3f(RANKS * SQUARESIZE, -DISKHEIGHT - i    , FILES * SQUARESIZE);
+                glVertex3f(RANKS * SQUARESIZE, -DISKHEIGHT - i - k, FILES * SQUARESIZE);
+                glVertex3f(RANKS * SQUARESIZE, -DISKHEIGHT - i    , 0.0);
+                glVertex3f(RANKS * SQUARESIZE, -DISKHEIGHT - i - k, 0.0);
+                glVertex3f(0.0               , -DISKHEIGHT - i    , 0.0);
+                glVertex3f(0.0               , -DISKHEIGHT - i - k, 0.0);
+                glEnd();
+        }
+        glDisable(GL_FOG);
         glEndList();
 
         /* Create displaylist for disk */
