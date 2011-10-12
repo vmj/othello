@@ -6,6 +6,7 @@ MAN1DIR ?= $(MANDIR)/man1
 MAN_TXT = $(wildcard *.[1-8].txt)
 
 HTML = $(MAN_TXT:.txt=.html)
+HTML += index.html
 
 MAN_XML = $(MAN_TXT:.txt=.xml)
 MAN = $(MAN_XML:.xml=)
@@ -42,6 +43,9 @@ man: $(MAN)
 	asciidoc -b docbook -d manpage -o $@ $<
 
 html: $(HTML)
+
+index.html: ../README.rst
+	rst2html.py ../README.rst index.html
 
 %.html: %.txt
 	asciidoc -b html -d manpage -o $@ $<
