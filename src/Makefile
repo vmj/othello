@@ -7,7 +7,7 @@ CC ?= gcc
 SRC = $(wildcard *.c)
 HDR = $(filter-out $(SRC:.c=.h),$(wildcard *.h))
 OBJ = $(SRC:.c=.o)
-LDFLAGS = -lglut
+LDFLAGS = -lm -lGL -lGLU -lglut
 
 all: othello
 
