@@ -12,7 +12,7 @@ LDFLAGS = -lm -lGL -lGLU -lglut
 all: othello
 
 othello: $(HDR) $(OBJ)
-	$(CC) $(LDFLAGS) -o othello $(OBJ)
+	$(CC) -o othello $(OBJ) $(LDFLAGS)
 
 clean:
 	-@rm *~ *.o 2>/dev/null || true

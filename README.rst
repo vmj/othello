@@ -35,7 +35,11 @@ See `othello(1)`_ for more information on usage and configuration.
 Requirements
 ============
 
-A C compiler, and OpenGL libraries and headers.
+The 'make' command, a C compiler, standard C libraries and headers,
+and OpenGL libraries and headers, including the GLU and GLUT.
+
+On Debian and derivates, you can get all of those by issuing command
+'sudo apt-get install libc6-dev freeglut3-dev'.
 
 
 Installation
