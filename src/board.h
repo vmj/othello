@@ -10,8 +10,16 @@ typedef struct {
         Flipper *flipper;
 } Square;
 
-/* Serves as a measure of unit, more than anything else. */
-#define SQUARESIZE 50
+/**
+ * Square size in OpenGL world units.
+ *
+ * Square size is a convenient unit when placing lights and camera around
+ * the board.  A value of one is a no-op, so it could be optimized out
+ * (likely, the compiler does that).  But, since we've gone through the
+ * trouble of having all the calculations done in terms of square size,
+ * let's just keep this around.
+ */
+#define SQUARESIZE 1
 
 /* Array of Squares */
 Square *board;
