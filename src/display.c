@@ -1,6 +1,6 @@
 #include <GL/glut.h>
+#include "global.h"
 #include "common.h"
-#include "board.h"
 #include "camera.h"
 #include "flippers.h"
 #include "shift.h"
@@ -83,7 +83,7 @@ GLfloat disk_shininess = 128.0;
  * Initialize display "subsystem"
  */
 Bool
-oth_display_init(int *argc, char **argv)
+oth_display_init(Board* board, int *argc, char **argv)
 {
         const int h = 100000;
         const int k = CLAMP(0, 50, SQUARESIZE);
@@ -98,9 +98,9 @@ oth_display_init(int *argc, char **argv)
         glEnable(GL_NORMALIZE);
 
         /* Setup lighting */
-        light0_position[0] = RANKS * SQUARESIZE;
+        light0_position[0] = board->ranks * SQUARESIZE;
         light0_position[1] = cam.radius.y;
-        light0_position[2] = FILES * SQUARESIZE;
+        light0_position[2] = board->files * SQUARESIZE;
 
         light0_direction[0] = -light0_position[0] / 4;
         light0_direction[1] = -light0_position[1];
@@ -116,9 +116,9 @@ oth_display_init(int *argc, char **argv)
         light1_position[1] = cam.radius.y;
         light1_position[2] = 0.0;
 
-        light1_direction[0] = (RANKS * SQUARESIZE) / (double)4;
+        light1_direction[0] = (board->ranks * SQUARESIZE) / (double)4;
         light1_direction[1] = -light1_position[1];
-        light1_direction[2] = (FILES * SQUARESIZE) / (double)4;
+        light1_direction[2] = (board->files * SQUARESIZE) / (double)4;
 
         glLightfv(GL_LIGHT1, GL_AMBIENT, light1_ambient);
         glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_diffuse);
@@ -126,7 +126,7 @@ oth_display_init(int *argc, char **argv)
         glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, light1_cutoff);
         glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, light1_exponent);
 
-        light2_position[0] = RANKS * SQUARESIZE;
+        light2_position[0] = board->ranks * SQUARESIZE;
         light2_position[1] = cam.radius.y;
         light2_position[2] = 0.0;
 
@@ -142,7 +142,7 @@ oth_display_init(int *argc, char **argv)
 
         light3_position[0] = 0.0;
         light3_position[1] = cam.radius.y;
-        light3_position[2] = FILES * SQUARESIZE;
+        light3_position[2] = board->files * SQUARESIZE;
 
         light3_direction[0] = light3_position[0] / 4;
         light3_direction[1] = -light3_position[1];
@@ -163,10 +163,10 @@ oth_display_init(int *argc, char **argv)
         glMaterialfv(GL_FRONT, GL_SPECULAR, boardL_specular);
         glMaterialf(GL_FRONT, GL_SHININESS, boardL_shininess);
         glBegin(GL_QUADS);
-        for (rank = 0; rank < RANKS; rank += 2)
+        for (rank = 0; rank < board->ranks; rank += 2)
         {
                 r = rank * SQUARESIZE;
-                for (file = 0; file < FILES; file += 2)
+                for (file = 0; file < board->files; file += 2)
                 {
                         f = file * SQUARESIZE;
                         for (i = 0; i < SQUARESIZE; i += k)
@@ -194,10 +194,10 @@ oth_display_init(int *argc, char **argv)
         glMaterialfv(GL_FRONT, GL_SPECULAR, boardD_specular);
         glMaterialf(GL_FRONT, GL_SHININESS, boardD_shininess);
         glBegin(GL_QUADS);
-        for (rank = 0; rank < RANKS; rank += 2)
+        for (rank = 0; rank < board->ranks; rank += 2)
         {
                 r = rank * SQUARESIZE;
-                for (file = 0; file < FILES; file += 2)
+                for (file = 0; file < board->files; file += 2)
                 {
                         f = file * SQUARESIZE;
                         for (i = 0; i < SQUARESIZE; i += k)
@@ -230,12 +230,12 @@ oth_display_init(int *argc, char **argv)
                 glBegin(GL_QUAD_STRIP);
                 glVertex3f(0.0               , -DISKHEIGHT - i    , 0.0);
                 glVertex3f(0.0               , -DISKHEIGHT - i - k, 0.0);
-                glVertex3f(0.0               , -DISKHEIGHT - i    , FILES * SQUARESIZE);
-                glVertex3f(0.0               , -DISKHEIGHT - i - k, FILES * SQUARESIZE);
-                glVertex3f(RANKS * SQUARESIZE, -DISKHEIGHT - i    , FILES * SQUARESIZE);
-                glVertex3f(RANKS * SQUARESIZE, -DISKHEIGHT - i - k, FILES * SQUARESIZE);
-                glVertex3f(RANKS * SQUARESIZE, -DISKHEIGHT - i    , 0.0);
-                glVertex3f(RANKS * SQUARESIZE, -DISKHEIGHT - i - k, 0.0);
+                glVertex3f(0.0               , -DISKHEIGHT - i    , board->files * SQUARESIZE);
+                glVertex3f(0.0               , -DISKHEIGHT - i - k, board->files * SQUARESIZE);
+                glVertex3f(board->ranks * SQUARESIZE, -DISKHEIGHT - i    , board->files * SQUARESIZE);
+                glVertex3f(board->ranks * SQUARESIZE, -DISKHEIGHT - i - k, board->files * SQUARESIZE);
+                glVertex3f(board->ranks * SQUARESIZE, -DISKHEIGHT - i    , 0.0);
+                glVertex3f(board->ranks * SQUARESIZE, -DISKHEIGHT - i - k, 0.0);
                 glVertex3f(0.0               , -DISKHEIGHT - i    , 0.0);
                 glVertex3f(0.0               , -DISKHEIGHT - i - k, 0.0);
                 glEnd();
@@ -287,6 +287,8 @@ oth_display(void)
         Flipper *p;
         int rank, file, x1, x2, z1, z2, i;
         GLint mode[1];
+        Board* board = current_board;
+        Square* square = NULL;
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -311,13 +313,13 @@ oth_display(void)
 
                 glCallList(BOARD);
 
-                for (rank = 0; rank < RANKS; ++rank)
+                for (rank = 0; rank < board->ranks; ++rank)
                 {
-                        for (file = 0; file < FILES; ++file)
+                        for (file = 0; file < board->files; ++file)
                         {
+                                square = board(board, rank, file);
 
-                                i = index(rank, file);
-                                if (board[i].disk == EMPTY)
+                                if (square->disk == EMPTY)
                                         continue;
 
                                 glPushMatrix();
@@ -327,9 +329,9 @@ oth_display(void)
                                              file * SQUARESIZE);
 
                                 /* Draw disk (flipping) */
-                                if (board[i].flipping == true)
+                                if (square->flipping == true)
                                 {
-                                        p = board[i].flipper;
+                                        p = square->flipper;
                                         glTranslatef(p->translation.x,
                                                      p->translation.y,
                                                      p->translation.z);
@@ -343,7 +345,7 @@ oth_display(void)
                                 /* Draw disk (stationary) */
                                 else
                                 {
-                                        if (board[i].disk == BLACK)
+                                        if (square->disk == BLACK)
                                         {
                                                 glMaterialfv(GL_FRONT,
                                                              GL_DIFFUSE,
@@ -368,17 +370,17 @@ oth_display(void)
         {                       /* mode[0] == GL_SELECTION */
 
                 /* Draw selection squares */
-                for (rank = 0; rank < RANKS; ++rank)
+                for (rank = 0; rank < board->ranks; ++rank)
                 {
                         x1 = rank * SQUARESIZE;
                         x2 = x1 + SQUARESIZE;
 
-                        for (file = 0; file < FILES; ++file)
+                        for (file = 0; file < board->files; ++file)
                         {
+                                i = index(board, rank, file);
+                                square = &(board->squares[i]);
 
-                                i = index(rank, file);
-
-                                if (board[i].disk != EMPTY)
+                                if (square->disk != EMPTY)
                                         continue;
                                 if (shift == LIGHT && score[i].light == 0)
                                         continue;

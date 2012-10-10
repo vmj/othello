@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <GL/glut.h>
+#include "global.h"
 #include "display.h"
 #include "keyboard.h"
 #include "board.h"
@@ -11,7 +12,7 @@
 
 void __oth_init(int *argc, char **argv);
 void __oth_help(int exitcode);
-void __oth_version();
+void __oth_version(void);
 
 int
 main(int argc, char **argv)
@@ -39,6 +40,7 @@ void
 __oth_init(int *argc, char **argv)
 {
         int i;
+        Board *board;
 
         for (i = 1; i < *argc; ++i)
         {
@@ -59,30 +61,31 @@ __oth_init(int *argc, char **argv)
         }
 
         /* Alloc and init board and score */
-        if (!oth_board_init(argc, argv))
+        current_board = board = oth_board_init(argc, argv);
+        if (!board)
         {
                 __oth_help(-1);
         }
 
         /* Alloc and init flippers */
-        if (!oth_flippers_init(argc, argv))
+        if (!oth_flippers_init(board, argc, argv))
         {
-                oth_board_free();
+                oth_board_free(board);
                 __oth_help(-1);
         }
 
         /* Init cam */
-        if (!oth_camera_init(argc, argv))
+        if (!oth_camera_init(board, argc, argv))
         {
-                oth_board_free();
+                oth_board_free(board);
                 oth_flippers_free();
                 __oth_help(-1);
         }
 
         /* Init display */
-        if (!oth_display_init(argc, argv))
+        if (!oth_display_init(board, argc, argv))
         {
-                oth_board_free();
+                oth_board_free(board);
                 oth_flippers_free();
                 oth_camera_free();
                 __oth_help(-1);
@@ -91,7 +94,7 @@ __oth_init(int *argc, char **argv)
         /* Init shift */
         if (!oth_shift_init(argc, argv))
         {
-                oth_board_free();
+                oth_board_free(board);
                 oth_flippers_free();
                 oth_camera_free();
                 oth_display_free();

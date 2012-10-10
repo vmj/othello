@@ -38,13 +38,16 @@ depend:
 
 # DO NOT DELETE
 
-shift.o: common.h comp.h board.h flippers.h user.h shift.h
-user.o: camera.h common.h shift.h board.h flippers.h display.h user.h
-display.o: common.h board.h flippers.h camera.h shift.h display.h
-flippers.o: common.h board.h flippers.h display.h shift.h
-comp.o: board.h common.h flippers.h shift.h comp.h
-camera.o: board.h common.h flippers.h camera.h
-main.o: display.h common.h keyboard.h board.h flippers.h camera.h shift.h
-main.o: version.h
-board.o: common.h board.h flippers.h
+shift.o: common.h comp.h flippers.h transform.h board.h user.h shift.h
+user.o: global.h board.h common.h transform.h camera.h shift.h display.h
+user.o: user.h
+display.o: global.h board.h common.h transform.h camera.h flippers.h shift.h
+display.o: display.h
+flippers.o: global.h board.h common.h transform.h display.h shift.h
+flippers.o: flippers.h
+comp.o: global.h board.h common.h transform.h shift.h comp.h
+camera.o: board.h common.h transform.h camera.h
+main.o: global.h board.h common.h transform.h display.h keyboard.h flippers.h
+main.o: camera.h shift.h version.h
+board.o: common.h board.h transform.h
 keyboard.o: common.h camera.h keyboard.h

@@ -1,14 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <GL/glut.h>
+#include "global.h"
 #include "common.h"
-#include "board.h"              // RANKS, FILES, BOARD_SIZE_*
+#include "board.h"
 #include "display.h"            // materials (light_* and dark_*)
 #include "shift.h"              // shift
 #include "flippers.h"
 
 /* We need this many flippers */
-#define FLIPPERS        (MAX (RANKS, FILES) - 2)
+#define FLIPPERS        (MAX (board->ranks, board->files) - 2)
 
 /* This is to jump out of the animation early when only few disks are flipping.
  * Index of the last used Flipper in *flippers. Maintained by 
@@ -26,7 +27,7 @@ Flipper stepper;
  * Initialize flippers "subsystem".
  */
 Bool
-oth_flippers_init(int *argc, char **argv)
+oth_flippers_init(Board* board, int *argc, char **argv)
 {
         int i;
         double a, b;
@@ -63,7 +64,7 @@ oth_flippers_init(int *argc, char **argv)
                      / ((double)BOARD_SIZE_MAX - BOARD_SIZE_MIN));
                 b = 180 - BOARD_SIZE_MIN * a;
                 precision =
-                        (unsigned char)(a * ((RANKS + FILES) / 2.0) + b);
+                        (unsigned char)(a * ((board->ranks + board->files) / 2.0) + b);
         }
 
         /* Initialize flippers */
@@ -85,7 +86,7 @@ oth_flippers_init(int *argc, char **argv)
                 stepper.specular[i] = dark_specular[i];
         }
 
-        oth_flippers_reset();
+        oth_flippers_reset(board);
         return true;
 }
 
@@ -103,7 +104,7 @@ oth_flippers_free()
  * Reset flippers to their starting values.
  */
 void
-oth_flippers_reset()
+oth_flippers_reset(Board* board)
 {
         register int i, j;
         int f = FLIPPERS;
@@ -143,6 +144,7 @@ oth_flippers_update(void)
 {
         Flipper *p;
         int flipper, i;
+        Board* board = current_board;
         /* j controls the wave effect. */
         static int j = -1;
 
@@ -236,7 +238,7 @@ oth_flippers_update(void)
         if (flippers[last_used_flipper].rotation.a >= 180)
         {
                 j = -1;
-                oth_shift_reset();
+                oth_shift_reset(board);
         }
 
         glutPostRedisplay();

@@ -1,7 +1,7 @@
 #ifndef _OTHELLO_BOARD_H_
 #define _OTHELLO_BOARD_H_
 #include "common.h"
-#include "flippers.h"           // Flipper
+#include "transform.h"           // Flipper
 
 /* One square on the board. */
 typedef struct {
@@ -21,17 +21,19 @@ typedef struct {
  */
 #define SQUARESIZE 1
 
-/* Array of Squares */
-Square *board;
+typedef struct {
+        /* Array of Squares */
+        Square *squares;
+        /* Actual board size. User can define them using -r and -f
+         * options. */
+        int ranks;
+        int files;
+} Board;
 
 /* Limits for board size. */
 #define BOARD_SIZE_MIN  4
 #define BOARD_SIZE_MAX 98
 #define BOARD_SIZE_DEF  8
-
-/* Actual board size. User can define them using -r and -f options. */
-int RANKS;
-int FILES;
 
 /*  */
 struct Score {
@@ -44,18 +46,20 @@ int best_dark;
 int best_light;
 
 /* Macros to convert between index and (rank, file) information. */
-#define rank(index)          ((index) / (FILES))
-#define file(index)          ((index) % (FILES))
-#define index(rank, file)    ((FILES) * (rank) + (file))
+#define rank(board, index)          ((index) / ((board)->files))
+#define file(board, index)          ((index) % ((board)->files))
+#define index(board, rank, file)    (((board)->files) * (rank) + (file))
 
 /* Macros to access board and score arrays as if they were two dimensional. */
-#define board(rank, file)    (board[ index((rank), (file)) ])
+#define board(board, rank, file)    (&((board)->squares[ index((board), (rank), (file)) ]))
 #define score(rank, file)    (score[ index((rank), (file)) ])
 
-Bool oth_board_init(int *argc, char **argv);
-void oth_board_free();
-void oth_board_reset();
+Board*   oth_board_init         (int *argc, char **argv);
+void     oth_board_free         (Board* board);
+void     oth_board_reset        (Board* board);
 
-void oth_board_flip_disks(int rank, int file);
+void     oth_board_flip_disks   (Board* board,
+                                 int rank,
+                                 int file);
 
 #endif                          /* _OTHELLO_BOARD_H_ */

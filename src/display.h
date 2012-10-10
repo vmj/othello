@@ -2,6 +2,7 @@
 #define _OTHELLO_DISPLAY_H_
 #include <GL/glut.h>
 #include "common.h"
+#include "board.h"
 
 /* Disks are squashed spheres, here's their info. */
 #define DISKSQUASH 0.33
@@ -16,9 +17,9 @@ GLfloat light_ambient[4];
 GLfloat light_diffuse[4];
 GLfloat light_specular[4];
 
-Bool oth_display_init(int *argc, char **argv);
-void oth_display_free();
-void oth_display_reset();
+Bool oth_display_init(Board* board, int *argc, char **argv);
+void oth_display_free(void);
+void oth_display_reset(void);
 
 void oth_display(void);
 void oth_reshape(int width, int height);

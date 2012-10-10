@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <GL/glut.h>
+#include "global.h"
 #include "camera.h"
 #include "shift.h"
 #include "display.h"
@@ -16,7 +17,7 @@ oth_mouse(int button, int state, int x, int y)
         GLint hits;
         GLuint name_stack[100]; // [FIXME] unnecesserily big ?
         GLint viewport[4];
-
+        Board* board = current_board;
         if (button != GLUT_LEFT_BUTTON || state != GLUT_DOWN)
                 return;
 
@@ -53,15 +54,15 @@ oth_mouse(int button, int state, int x, int y)
         hits = glRenderMode(GL_RENDER);
         if (hits != 1)
                 return;
-        r = rank(name_stack[3]);
-        f = file(name_stack[3]);
-        if (!oth_shift_valid(r, f))
+        r = rank(board, name_stack[3]);
+        f = file(board, name_stack[3]);
+        if (!oth_shift_valid(board, r, f))
         {
                 r = f = -1;     /* invalid choice */
                 return;
         }
 
         /* Process valid choice */
-        oth_shift_update(r, f);
+        oth_shift_update(board, r, f);
         glutPostRedisplay();
 }

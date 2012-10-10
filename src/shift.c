@@ -4,12 +4,11 @@
 #include <GL/glut.h>
 #include "common.h"
 #include "comp.h"
-#include "board.h"
 #include "flippers.h"
 #include "user.h"
 #include "shift.h"
 
-void __oth_shift_game_over();
+void __oth_shift_game_over(Board* board);
 
 void __shift_set_comp(void);
 void __shift_unset_comp(void);
@@ -84,7 +83,7 @@ oth_shift_init(int *argc, char **argv)
  * Free resources taken by shift manager.
  */
 void
-oth_shift_free()
+oth_shift_free(void)
 {
 }
 
@@ -92,11 +91,11 @@ oth_shift_free()
  * Returns true if current player is allowed to put her disk in given square.
  */
 Bool
-oth_shift_valid(int rank, int file)
+oth_shift_valid(Board* board, int rank, int file)
 {
-        int i = index(rank, file);
+        int i = index(board, rank, file);
 
-        if (board[i].disk != EMPTY)
+        if (board->squares[i].disk != EMPTY)
                 return false;
         if (shift == DARK && score[i].dark == 0)
                 return false;
@@ -113,13 +112,13 @@ oth_shift_valid(int rank, int file)
  * for flipping and changes current player and starts animation.
  */
 void
-oth_shift_update(int rank, int file)
+oth_shift_update(Board* board, int rank, int file)
 {
-        if (!oth_shift_valid(rank, file))
+        if (!oth_shift_valid(board, rank, file))
                 return;
 
-        board(rank, file).disk = (shift == DARK ? BLACK : WHITE);
-        oth_board_flip_disks(rank, file);
+        board(board, rank, file)->disk = (shift == DARK ? BLACK : WHITE);
+        oth_board_flip_disks(board, rank, file);
 
         switch (shift)
         {
@@ -141,57 +140,53 @@ oth_shift_update(int rank, int file)
 /**
  * Stops the animation, resets the board and flippers, and changes current
  * player. If next player has no moves, shift is given back to previous
- * player. However, if both players are out of luck, starts game over 
+ * player. However, if both players are out of luck, starts game over
  * animation.
  */
 void
-oth_shift_reset()
+oth_shift_reset(Board* board)
 {
         glutIdleFunc(NULL);
 
-        oth_board_reset();
+        oth_board_reset(board);
 
         if (shift == DARK)
         {
-
                 if (best_light >= 0)
                 {
                         shift = LIGHT;
-                        oth_flippers_reset();
+                        oth_flippers_reset(board);
                         __shift_set_light();
                 }
                 else if (best_dark >= 0)
                 {
-                        oth_flippers_reset();
+                        oth_flippers_reset(board);
                         __shift_set_dark();
                 }
                 else
                 {
                         shift = NONE;
-                        __oth_shift_game_over();
+                        __oth_shift_game_over(board);
                 }
-
         }
         else if (shift == LIGHT)
         {
-
                 if (best_dark >= 0)
                 {
                         shift = DARK;
-                        oth_flippers_reset();
+                        oth_flippers_reset(board);
                         __shift_set_dark();
                 }
                 else if (best_light >= 0)
                 {
-                        oth_flippers_reset();
+                        oth_flippers_reset(board);
                         __shift_set_light();
                 }
                 else
                 {
                         shift = NONE;
-                        __oth_shift_game_over();
+                        __oth_shift_game_over(board);
                 }
-
         }
         else
         {                       /* shift == NONE, Game Over animation done. */
@@ -203,17 +198,18 @@ oth_shift_reset()
  * Counts points, and set disks for game over animation.
  */
 void
-__oth_shift_game_over()
+__oth_shift_game_over(Board* board)
 {
         int darks = 0, lights = 0;
         int rank, file;
+        Square *square = NULL;
 
         /* Count the result */
-        for (rank = 0; rank < RANKS; ++rank)
+        for (rank = 0; rank < board->ranks; ++rank)
         {
-                for (file = 0; file < FILES; ++file)
+                for (file = 0; file < board->files; ++file)
                 {
-                        switch (board(rank, file).disk)
+                        switch (board(board, rank, file)->disk)
                         {
                         case EMPTY:
                                 break;
@@ -230,13 +226,14 @@ __oth_shift_game_over()
         fprintf(stderr, "Darks: %i, Lights: %i\n", darks, lights);
 
         /* Flip'em */
-        oth_flippers_reset();
+        oth_flippers_reset(board);
 
-        for (rank = 0; rank < RANKS; ++rank)
+        for (rank = 0; rank < board->ranks; ++rank)
         {
-                for (file = 0; file < FILES; ++file)
+                for (file = 0; file < board->files; ++file)
                 {
-                        switch (board(rank, file).disk)
+                        square = board(board, rank, file);
+                        switch (square->disk)
                         {
                         case EMPTY:
                                 break;
@@ -244,10 +241,9 @@ __oth_shift_game_over()
                                 if (darks == 0)
                                 {
                                         /* turn it to light */
-                                        board(rank, file).disk = WHITE;
-                                        board(rank, file).flipping = true;
-                                        board(rank, file).flipper =
-                                                &flippers[1];
+                                        square->disk = WHITE;
+                                        square->flipping = true;
+                                        square->flipper = &flippers[1];
                                         lights--;
                                 }
                                 else
@@ -260,10 +256,9 @@ __oth_shift_game_over()
                                 if (darks > 0)
                                 {
                                         /* turn it to dark */
-                                        board(rank, file).disk = BLACK;
-                                        board(rank, file).flipping = true;
-                                        board(rank, file).flipper =
-                                                &flippers[0];
+                                        square->disk = BLACK;
+                                        square->flipping = true;
+                                        square->flipper = &flippers[0];
                                         darks--;
                                 }
                                 else

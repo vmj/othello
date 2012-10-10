@@ -1,14 +1,13 @@
 #include <math.h>
-#include "board.h"              // FILES, RANKS, SQUARESIZE
 #include "camera.h"
 
 /**
  * Initialize camera "subsystem"
  */
 Bool
-oth_camera_init(int *argc, char **argv)
+oth_camera_init(Board* board, int *argc, char **argv)
 {
-        oth_camera_reset();
+        oth_camera_reset(board);
         return true;
 }
 
@@ -24,21 +23,21 @@ oth_camera_free()
  * Reset camera to it's initial place with initial viewing frustum.
  */
 void
-oth_camera_reset()
+oth_camera_reset(Board* board)
 {
         /* Most of these just feel suitable */
         cam.angle.v = V_ANGLE_MIN + (V_ANGLE_MAX - V_ANGLE_MIN) / 2;
         cam.angle.h = H_ANGLE_MIN + (H_ANGLE_MAX - H_ANGLE_MIN) / 2;
-        cam.radius.x = SQUARESIZE * RANKS + (SQUARESIZE * 2);
-        cam.radius.y = SQUARESIZE * MAX(RANKS, FILES) + (SQUARESIZE * 2);
-        cam.radius.z = SQUARESIZE * FILES + (SQUARESIZE * 2);
+        cam.radius.x = SQUARESIZE * board->ranks + (SQUARESIZE * 2);
+        cam.radius.y = SQUARESIZE * MAX(board->ranks, board->files) + (SQUARESIZE * 2);
+        cam.radius.z = SQUARESIZE * board->files + (SQUARESIZE * 2);
         cam.frustum.fov = 70.0;
         cam.frustum.close = 1.0;
         cam.frustum.distant =
                 MAX(MAX(cam.radius.x, cam.radius.z), cam.radius.y) * 2;
-        cam.at.x = RANKS * SQUARESIZE / (double)2;
+        cam.at.x = board->ranks * SQUARESIZE / (double)2;
         cam.at.y = 0.0;
-        cam.at.z = FILES * SQUARESIZE / (double)2;
+        cam.at.z = board->files * SQUARESIZE / (double)2;
         cam.up.x = 0;
         cam.up.y = 1;
         cam.up.z = 0;

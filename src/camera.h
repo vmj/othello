@@ -2,6 +2,7 @@
 #define _OTHELLO_CAMERA_H_
 
 #include "common.h"
+#include "board.h"
 
 /* Structure to control viewing parameters. Angles are relative to center of
  * the board and controlled via arrow keys.
@@ -40,10 +41,10 @@ struct Camera {
 #define H_ANGLE_INCREMENT_MIN    1      /* when looking from V_ANGLE_MIN */
 #define H_ANGLE_INCREMENT_MAX   10      /* when looking from V_ANGLE_MAX */
 
-Bool oth_camera_init(int *argc, char **argv);
-void oth_camera_free();
-void oth_camera_reset();
+Bool oth_camera_init(Board* board, int *argc, char **argv);
+void oth_camera_free(void);
+void oth_camera_reset(Board* board);
 
-inline void oth_camera_update();
+inline void oth_camera_update(void);
 
 #endif
