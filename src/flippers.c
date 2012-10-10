@@ -75,14 +75,13 @@ oth_flippers_init(int *argc, char **argv)
         }
 
         /* Initialize stepper */
-        stepper.translation.x = (float)SQUARESIZE / precision;
-        stepper.rotation.a = (float)180 / precision;
+        stepper.translation.x = SQUARESIZE / (float)precision;
+        stepper.rotation.a = 180 / (float)precision;
         for (i = 0; i < 3; ++i)
         {
                 stepper.ambient[i] = dark_ambient[i];
-                stepper.diffuse[i] =
-                        ((float)light_diffuse[i] -
-                         dark_diffuse[i]) / precision;
+                stepper.diffuse[i] = (light_diffuse[i] - dark_diffuse[i])
+                                   / (float)precision;
                 stepper.specular[i] = dark_specular[i];
         }
 
