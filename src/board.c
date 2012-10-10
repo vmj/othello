@@ -90,16 +90,6 @@ oth_board_init(int *argc, char **argv)
                 squares[i].disk = EMPTY;
         }
 
-        /* Initialize score */
-        i = rank * file;
-        score = (struct Score *)calloc(i, sizeof(struct Score));
-        if (score == NULL)
-        {
-                free(squares);
-                board->squares = squares = NULL;
-                return NULL;
-        }
-
         /* Set starting positions */
         board(board, rank / 2, file / 2)->disk = WHITE;
         board(board, rank / 2, file / 2 - 1)->disk = BLACK;
@@ -123,8 +113,6 @@ oth_board_free(Board* board)
                         free(board->squares);
                 free(board);
         }
-        if (score)
-                free(score);
 }
 
 /**
@@ -147,23 +135,23 @@ oth_board_reset(Board* board)
                         i = index(board, rank, file);
                         square = &(board->squares[i]);
                         square->flipping = false;
-                        score[i].light = 0;
-                        score[i].dark = 0;
+                        square->score.light = 0;
+                        square->score.dark = 0;
 
                         /* Update scores and "bests" */
                         if (square->disk == EMPTY)
                         {
                                 __board_update_scores(board, rank, file);
 
-                                if (score[i].dark > best_score_d)
+                                if (square->score.dark > best_score_d)
                                 {
                                         best_dark = i;
-                                        best_score_d = score[i].dark;
+                                        best_score_d = square->score.dark;
                                 }
-                                if (score[i].light > best_score_l)
+                                if (square->score.light > best_score_l)
                                 {
                                         best_light = i;
-                                        best_score_l = score[i].light;
+                                        best_score_l = square->score.light;
                                 }
                         }
                 }
@@ -192,7 +180,7 @@ __board_update_scores(Board* board, int rank, int file)
 inline void
 __board_update_scores_d(Board* board, int rank, int file, int r_inc, int f_inc)
 {
-        int i = index(board, rank, file);
+        Square *square = board(board, rank, file);
         int r = rank + r_inc;
         int f = file + f_inc;
         int score_dark = 0, score_light = 0;
@@ -226,9 +214,9 @@ __board_update_scores_d(Board* board, int rank, int file, int r_inc, int f_inc)
 
  DONE:
         if (!no_darks)
-                score[i].dark += score_dark;
+                square->score.dark += score_dark;
         if (!no_lights)
-                score[i].light += score_light;
+                square->score.light += score_light;
 }
 
 /**

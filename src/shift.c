@@ -93,13 +93,13 @@ oth_shift_free(void)
 Bool
 oth_shift_valid(Board* board, int rank, int file)
 {
-        int i = index(board, rank, file);
+        Square *square = board(board, rank, file);
 
-        if (board->squares[i].disk != EMPTY)
+        if (square->disk != EMPTY)
                 return false;
-        if (shift == DARK && score[i].dark == 0)
+        if (shift == DARK && square->score.dark == 0)
                 return false;
-        else if (shift == LIGHT && score[i].light == 0)
+        else if (shift == LIGHT && square->score.light == 0)
                 return false;
         else if (shift == NONE)
                 return false;

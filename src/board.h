@@ -6,6 +6,7 @@
 /* One square on the board. */
 typedef struct {
         enum { EMPTY, BLACK, WHITE } disk;
+        struct { int dark; int light; } score;
         Bool flipping;
         Flipper *flipper;
 } Square;
@@ -35,12 +36,6 @@ typedef struct {
 #define BOARD_SIZE_MAX 98
 #define BOARD_SIZE_DEF  8
 
-/*  */
-struct Score {
-        int dark;
-        int light;
-} *score;
-
 /* Indexes of the "best" moves */
 int best_dark;
 int best_light;
@@ -50,9 +45,8 @@ int best_light;
 #define file(board, index)          ((index) % ((board)->files))
 #define index(board, rank, file)    (((board)->files) * (rank) + (file))
 
-/* Macros to access board and score arrays as if they were two dimensional. */
+/* Macro to access board as if it were two dimensional. */
 #define board(board, rank, file)    (&((board)->squares[ index((board), (rank), (file)) ]))
-#define score(rank, file)    (score[ index((rank), (file)) ])
 
 Board*   oth_board_init         (int *argc, char **argv);
 void     oth_board_free         (Board* board);

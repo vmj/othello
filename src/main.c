@@ -60,7 +60,7 @@ __oth_init(int *argc, char **argv)
                 }
         }
 
-        /* Alloc and init board and score */
+        /* Alloc and init board */
         current_board = board = oth_board_init(argc, argv);
         if (!board)
         {
