@@ -36,9 +36,9 @@ oth_camera_reset()
         cam.frustum.close = 1.0;
         cam.frustum.distant =
                 MAX(MAX(cam.radius.x, cam.radius.z), cam.radius.y) * 2;
-        cam.at.x = RANKS * SQUARESIZE / 2;
+        cam.at.x = RANKS * SQUARESIZE / (double)2;
         cam.at.y = 0.0;
-        cam.at.z = FILES * SQUARESIZE / 2;
+        cam.at.z = FILES * SQUARESIZE / (double)2;
         cam.up.x = 0;
         cam.up.y = 1;
         cam.up.z = 0;

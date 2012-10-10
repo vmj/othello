@@ -116,9 +116,9 @@ oth_display_init(int *argc, char **argv)
         light1_position[1] = cam.radius.y;
         light1_position[2] = 0.0;
 
-        light1_direction[0] = (RANKS * SQUARESIZE) / 4;
+        light1_direction[0] = (RANKS * SQUARESIZE) / (double)4;
         light1_direction[1] = -light1_position[1];
-        light1_direction[2] = (FILES * SQUARESIZE) / 4;
+        light1_direction[2] = (FILES * SQUARESIZE) / (double)4;
 
         glLightfv(GL_LIGHT1, GL_AMBIENT, light1_ambient);
         glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_diffuse);
@@ -252,7 +252,7 @@ oth_display_init(int *argc, char **argv)
         glMaterialfv(GL_FRONT, GL_AMBIENT, dark_ambient);
         glMaterialfv(GL_FRONT, GL_SPECULAR, dark_specular);
         glMaterialf(GL_FRONT, GL_SHININESS, disk_shininess);
-        glTranslatef(SQUARESIZE / 2, 0.0, SQUARESIZE / 2);
+        glTranslatef(SQUARESIZE / (double)2, 0.0, SQUARESIZE / (double)2);
         glScalef(1.0, DISKSQUASH, 1.0);
         gluSphere(quad, DISKRADIUS, 24, 24);
         glEndList();
