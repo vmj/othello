@@ -5,6 +5,7 @@
 
 /* One square on the board. */
 typedef struct {
+        int name;
         enum { EMPTY, BLACK, WHITE } disk;
         struct { int dark; int light; } score;
         Bool flipping;
@@ -25,6 +26,10 @@ typedef struct {
 typedef struct {
         /* Array of Squares */
         Square *squares;
+        /* Pointer to the highest score Square for the dark. */
+        Square *best_dark;
+        /* Pointer to the highest score Square for the light. */
+        Square *best_light;
         /* Actual board size. User can define them using -r and -f
          * options. */
         int ranks;
@@ -35,10 +40,6 @@ typedef struct {
 #define BOARD_SIZE_MIN  4
 #define BOARD_SIZE_MAX 98
 #define BOARD_SIZE_DEF  8
-
-/* Indexes of the "best" moves */
-int best_dark;
-int best_light;
 
 /* Macros to convert between index and (rank, file) information. */
 #define rank(board, index)          ((index) / ((board)->files))

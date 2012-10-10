@@ -87,6 +87,7 @@ oth_board_init(int *argc, char **argv)
         }
         while (--i >= 0)
         {
+                squares[i].name = i;
                 squares[i].disk = EMPTY;
         }
 
@@ -121,19 +122,18 @@ oth_board_free(Board* board)
 void
 oth_board_reset(Board* board)
 {
-        register int i, rank, file;
+        register int rank, file;
         Square *square = NULL;
         int best_score_d = 0, best_score_l = 0;
 
         /* Reset "bests" */
-        best_dark = best_light = -1;
+        board->best_dark = board->best_light = NULL;
 
         for (rank = 0; rank < board->ranks; ++rank)
         {
                 for (file = 0; file < board->files; ++file)
                 {
-                        i = index(board, rank, file);
-                        square = &(board->squares[i]);
+                        square = board(board, rank, file);
                         square->flipping = false;
                         square->score.light = 0;
                         square->score.dark = 0;
@@ -145,12 +145,12 @@ oth_board_reset(Board* board)
 
                                 if (square->score.dark > best_score_d)
                                 {
-                                        best_dark = i;
+                                        board->best_dark = square;
                                         best_score_d = square->score.dark;
                                 }
                                 if (square->score.light > best_score_l)
                                 {
-                                        best_light = i;
+                                        board->best_light = square;
                                         best_score_l = square->score.light;
                                 }
                         }

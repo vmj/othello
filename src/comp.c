@@ -15,13 +15,13 @@ oth_comp(void)
         /* Who Am I ? */
         if (shift == DARK)
         {
-                rank = rank(board, best_dark);
-                file = file(board, best_dark);
+                rank = rank(board, board->best_dark->name);
+                file = file(board, board->best_dark->name);
         }
         else
         {                       /* LIGHT */
-                rank = rank(board, best_light);
-                file = file(board, best_light);
+                rank = rank(board, board->best_light->name);
+                file = file(board, board->best_light->name);
         }
 
         oth_shift_update(board, rank, file);

@@ -152,13 +152,13 @@ oth_shift_reset(Board* board)
 
         if (shift == DARK)
         {
-                if (best_light >= 0)
+                if (board->best_light)
                 {
                         shift = LIGHT;
                         oth_flippers_reset(board);
                         __shift_set_light();
                 }
-                else if (best_dark >= 0)
+                else if (board->best_dark)
                 {
                         oth_flippers_reset(board);
                         __shift_set_dark();
@@ -171,13 +171,13 @@ oth_shift_reset(Board* board)
         }
         else if (shift == LIGHT)
         {
-                if (best_dark >= 0)
+                if (board->best_dark)
                 {
                         shift = DARK;
                         oth_flippers_reset(board);
                         __shift_set_dark();
                 }
-                else if (best_light >= 0)
+                else if (board->best_light)
                 {
                         oth_flippers_reset(board);
                         __shift_set_light();
