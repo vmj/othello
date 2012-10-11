@@ -18,6 +18,8 @@ oth_mouse(int button, int state, int x, int y)
         GLuint name_stack[100]; // [FIXME] unnecesserily big ?
         GLint viewport[4];
         Board* board = current_board;
+        Camera* camera = current_camera;
+
         if (button != GLUT_LEFT_BUTTON || state != GLUT_DOWN)
                 return;
 
@@ -29,8 +31,8 @@ oth_mouse(int button, int state, int x, int y)
         glLoadIdentity();
         gluPickMatrix(x, viewport[3] - (y - viewport[1] * 2), 2, 2,
                       viewport);
-        gluPerspective(cam.frustum.fov, 1.0, cam.frustum.close,
-                       cam.frustum.distant);
+        gluPerspective(camera->frustum.fov, 1.0, camera->frustum.close,
+                       camera->frustum.distant);
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
         glLoadIdentity();

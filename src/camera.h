@@ -7,7 +7,7 @@
 /* Structure to control viewing parameters. Angles are relative to center of
  * the board and controlled via arrow keys.
  */
-struct Camera {
+typedef struct {
         struct {
                 double fov, close, distant;
         } frustum;
@@ -26,7 +26,7 @@ struct Camera {
         struct {
                 float x, y, z;
         } up;
-} cam;
+} Camera;
 
 /* Limits for camera angles and how much they increment/decrement. Horizontal
  * increments are calculated as a function of vertical angle.
@@ -41,10 +41,13 @@ struct Camera {
 #define H_ANGLE_INCREMENT_MIN    1      /* when looking from V_ANGLE_MIN */
 #define H_ANGLE_INCREMENT_MAX   10      /* when looking from V_ANGLE_MAX */
 
-Bool oth_camera_init(Board* board, int *argc, char **argv);
-void oth_camera_free(void);
-void oth_camera_reset(Board* board);
+Camera*   oth_camera_init    (Board* board,
+                              int *argc,
+                              char **argv);
+void      oth_camera_free    (Camera* camera);
+void      oth_camera_reset   (Camera* camera,
+                              Board* board);
 
-inline void oth_camera_update(void);
+void      oth_camera_update  (Camera* camera);
 
 #endif

@@ -41,6 +41,7 @@ __oth_init(int *argc, char **argv)
 {
         int i;
         Board *board;
+        Camera *camera;
 
         for (i = 1; i < *argc; ++i)
         {
@@ -74,8 +75,9 @@ __oth_init(int *argc, char **argv)
                 __oth_help(-1);
         }
 
-        /* Init cam */
-        if (!oth_camera_init(board, argc, argv))
+        /* Init camera */
+        current_camera = camera = oth_camera_init(board, argc, argv);
+        if (!camera)
         {
                 oth_board_free(board);
                 oth_flippers_free();
@@ -83,11 +85,11 @@ __oth_init(int *argc, char **argv)
         }
 
         /* Init display */
-        if (!oth_display_init(board, argc, argv))
+        if (!oth_display_init(board, camera, argc, argv))
         {
                 oth_board_free(board);
                 oth_flippers_free();
-                oth_camera_free();
+                oth_camera_free(camera);
                 __oth_help(-1);
         }
 
@@ -96,7 +98,7 @@ __oth_init(int *argc, char **argv)
         {
                 oth_board_free(board);
                 oth_flippers_free();
-                oth_camera_free();
+                oth_camera_free(camera);
                 oth_display_free();
                 __oth_help(-1);
         }

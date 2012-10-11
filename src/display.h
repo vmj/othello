@@ -17,11 +17,15 @@ GLfloat light_ambient[4];
 GLfloat light_diffuse[4];
 GLfloat light_specular[4];
 
-Bool oth_display_init(Board* board, int *argc, char **argv);
-void oth_display_free(void);
-void oth_display_reset(void);
+Bool   oth_display_init    (Board* board,
+                            Camera* camera,
+                            int *argc,
+                            char **argv);
+void   oth_display_free    (void);
+void   oth_display_reset   (void);
 
-void oth_display(void);
-void oth_reshape(int width, int height);
+void   oth_display         (void);
+void   oth_reshape         (int width,
+                            int height);
 
 #endif                          /* _OTHELLO_DISPLAY_H_ */

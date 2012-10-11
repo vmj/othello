@@ -43,11 +43,11 @@ user.o: global.h board.h common.h transform.h camera.h shift.h display.h
 user.o: user.h
 display.o: global.h board.h common.h transform.h camera.h flippers.h shift.h
 display.o: display.h
-flippers.o: global.h board.h common.h transform.h display.h shift.h
+flippers.o: global.h board.h common.h transform.h camera.h display.h shift.h
 flippers.o: flippers.h
-comp.o: global.h board.h common.h transform.h shift.h comp.h
-camera.o: board.h common.h transform.h camera.h
-main.o: global.h board.h common.h transform.h display.h keyboard.h flippers.h
-main.o: camera.h shift.h version.h
+comp.o: global.h board.h common.h transform.h camera.h shift.h comp.h
+camera.o: common.h camera.h board.h transform.h
+main.o: global.h board.h common.h transform.h camera.h display.h keyboard.h
+main.o: flippers.h shift.h version.h
 board.o: common.h board.h transform.h
-keyboard.o: common.h camera.h keyboard.h
+keyboard.o: global.h board.h common.h transform.h camera.h keyboard.h
