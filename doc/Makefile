@@ -44,8 +44,8 @@ man: $(MAN)
 
 html: $(HTML)
 
-index.html: ../README.rst
-	rst2html.py ../README.rst index.html
+index.html: ../README.adoc
+	asciidoc -b html -o $@ $<
 
 %.html: %.txt
 	asciidoc -b html -d manpage -o $@ $<

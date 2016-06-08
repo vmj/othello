@@ -21,7 +21,7 @@ install: subdirs
 dist-internal:
 	-@rm -rf othello-$(VERSION) othello-$(VERSION).tar.gz 2>/dev/null || true
 	@mkdir othello-$(VERSION)
-	@cp -r LICENSE.txt Makefile README.rst doc src othello-$(VERSION)/
+	@cp -r LICENSE.txt Makefile README.adoc doc src othello-$(VERSION)/
 	@tar czf othello-$(VERSION).tar.gz othello-$(VERSION)
 	@rm -rf othello-$(VERSION)
 
