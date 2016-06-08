@@ -4,5 +4,6 @@ script: make
 addons:
   apt:
     packages:
+      - freeglut3-dev
       - asciidoc
       - xmlto
