@@ -99,7 +99,7 @@ oth_display_init(Board* board, Camera* camera, int *argc, char **argv)
 
         /* Setup lighting */
         light0_position[0] = board->ranks * SQUARESIZE;
-        light0_position[1] = camera->radius.y;
+        light0_position[1] = oth_camera_radius_y(camera);
         light0_position[2] = board->files * SQUARESIZE;
 
         light0_direction[0] = -light0_position[0] / 4;
@@ -113,7 +113,7 @@ oth_display_init(Board* board, Camera* camera, int *argc, char **argv)
         glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, light0_exponent);
 
         light1_position[0] = 0.0;
-        light1_position[1] = camera->radius.y;
+        light1_position[1] = oth_camera_radius_y(camera);
         light1_position[2] = 0.0;
 
         light1_direction[0] = (board->ranks * SQUARESIZE) / (double)4;
@@ -127,7 +127,7 @@ oth_display_init(Board* board, Camera* camera, int *argc, char **argv)
         glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, light1_exponent);
 
         light2_position[0] = board->ranks * SQUARESIZE;
-        light2_position[1] = camera->radius.y;
+        light2_position[1] = oth_camera_radius_y(camera);
         light2_position[2] = 0.0;
 
         light2_direction[0] = -light2_position[0] / 4;
@@ -141,7 +141,7 @@ oth_display_init(Board* board, Camera* camera, int *argc, char **argv)
         glLightf(GL_LIGHT2, GL_SPOT_EXPONENT, light2_exponent);
 
         light3_position[0] = 0.0;
-        light3_position[1] = camera->radius.y;
+        light3_position[1] = oth_camera_radius_y(camera);
         light3_position[2] = board->files * SQUARESIZE;
 
         light3_direction[0] = light3_position[0] / 4;
@@ -223,8 +223,8 @@ oth_display_init(Board* board, Camera* camera, int *argc, char **argv)
         glEnable(GL_FOG);
         glFogi(GL_FOG_MODE, GL_LINEAR);
         glFogfv(GL_FOG_COLOR, fog_color);
-        glFogf(GL_FOG_START, camera->radius.y);
-        glFogf(GL_FOG_END, camera->radius.y * 2);
+        glFogf(GL_FOG_START, oth_camera_radius_y(camera));
+        glFogf(GL_FOG_END, oth_camera_radius_y(camera) * 2);
         for (i = 0; i < h; i += k)
         {
                 glBegin(GL_QUAD_STRIP);
@@ -295,9 +295,9 @@ oth_display(void)
 
         glPushMatrix();
 
-        gluLookAt(camera->eye.x, camera->eye.y, camera->eye.z,
-                  camera->at.x, camera->at.y, camera->at.z,
-                  camera->up.x, camera->up.y, camera->up.z);
+        gluLookAt(oth_camera_eye_x(camera), oth_camera_eye_y(camera), oth_camera_eye_z(camera),
+                  oth_camera_at_x(camera), oth_camera_at_y(camera), oth_camera_at_z(camera),
+                  oth_camera_up_x(camera), oth_camera_up_y(camera), oth_camera_up_z(camera));
 
         glGetIntegerv(GL_RENDER_MODE, mode);
 
@@ -421,8 +421,8 @@ oth_reshape(int width, int height)
 
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        gluPerspective(camera->frustum.fov, 1.0,
-                       camera->frustum.close, camera->frustum.distant);
+        gluPerspective(oth_camera_frustum_fov(camera), 1.0,
+                       oth_camera_frustum_close(camera), oth_camera_frustum_distant(camera));
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();

@@ -28,19 +28,6 @@ typedef struct {
         } up;
 } Camera;
 
-/* Limits for camera angles and how much they increment/decrement. Horizontal
- * increments are calculated as a function of vertical angle.
- */
-#define V_ANGLE_MIN              0
-#define V_ANGLE_MAX              89
-
-#define H_ANGLE_MIN              0
-#define H_ANGLE_MAX              360
-
-#define V_ANGLE_INCREMENT        1
-#define H_ANGLE_INCREMENT_MIN    1      /* when looking from V_ANGLE_MIN */
-#define H_ANGLE_INCREMENT_MAX   10      /* when looking from V_ANGLE_MAX */
-
 Camera*   oth_camera_init    (Board* board,
                               int *argc,
                               char **argv);
@@ -49,5 +36,29 @@ void      oth_camera_reset   (Camera* camera,
                               Board* board);
 
 void      oth_camera_update  (Camera* camera);
+
+void      oth_camera_move_up    (Camera* camera);
+void      oth_camera_move_down  (Camera* camera);
+void      oth_camera_move_left  (Camera* camera);
+void      oth_camera_move_right (Camera* camera);
+
+double    oth_camera_frustum_fov     (Camera* camera);
+double    oth_camera_frustum_close   (Camera* camera);
+double    oth_camera_frustum_distant (Camera* camera);
+float     oth_camera_angle_v (Camera* camera);
+float     oth_camera_angle_h (Camera* camera);
+float     oth_camera_radius_x (Camera* camera);
+float     oth_camera_radius_y (Camera* camera);
+float     oth_camera_radius_z (Camera* camera);
+float     oth_camera_eye_x (Camera* camera);
+float     oth_camera_eye_y (Camera* camera);
+float     oth_camera_eye_z (Camera* camera);
+float     oth_camera_at_x (Camera* camera);
+float     oth_camera_at_y (Camera* camera);
+float     oth_camera_at_z (Camera* camera);
+float     oth_camera_up_x (Camera* camera);
+float     oth_camera_up_y (Camera* camera);
+float     oth_camera_up_z (Camera* camera);
+
 
 #endif

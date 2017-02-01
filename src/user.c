@@ -31,8 +31,8 @@ oth_mouse(int button, int state, int x, int y)
         glLoadIdentity();
         gluPickMatrix(x, viewport[3] - (y - viewport[1] * 2), 2, 2,
                       viewport);
-        gluPerspective(camera->frustum.fov, 1.0, camera->frustum.close,
-                       camera->frustum.distant);
+        gluPerspective(oth_camera_frustum_fov(camera), 1.0, oth_camera_frustum_close(camera),
+                       oth_camera_frustum_distant(camera));
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
         glLoadIdentity();
