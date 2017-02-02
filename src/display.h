@@ -1,6 +1,10 @@
 #ifndef _OTHELLO_DISPLAY_H_
 #define _OTHELLO_DISPLAY_H_
+#ifdef __APPLE__
+#include <glut.h>
+#else
 #include <GL/glut.h>
+#endif
 #include "common.h"
 #include "board.h"
 

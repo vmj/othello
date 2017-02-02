@@ -4,6 +4,10 @@
 #ifdef WIN32
 #define inline
 #endif
+#ifdef __APPLE__
+#define NULL 0
+#define inline
+#endif
 
 #ifdef __c99
 #  include <stdbool.h>

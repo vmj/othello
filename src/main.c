@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#ifdef __APPLE__
+#include <glut.h>
+#else
 #include <GL/glut.h>
+#endif
 #include "global.h"
 #include "display.h"
 #include "keyboard.h"

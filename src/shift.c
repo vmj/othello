@@ -1,7 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#ifdef __APPLE__
+#include <glut.h>
+#else
 #include <GL/glut.h>
+#endif
 #include "common.h"
 #include "comp.h"
 #include "flippers.h"
