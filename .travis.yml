@@ -1,6 +1,11 @@
 language: c
 compiler: gcc
-script: make
+script:
+  - mkdir build
+  - cd build
+  - cmake -DCMAKE_INSTALL_PREFIX=/usr ..
+  - cmake --build .
+  - make install DESTDIR=/tmp/package-genmac
 addons:
   apt:
     packages:
