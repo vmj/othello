@@ -8,9 +8,6 @@
 #include "global.h"
 #include "common.h"
 #include "camera.h"
-//#include "board.h"
-//#include "shift.h"
-//#include "display.h"
 #include "keyboard.h"
 
 /**

@@ -99,8 +99,8 @@ oth_camera_move_up(Camera* camera)
                         CLAMP(V_ANGLE_MIN, camera->angle.v, V_ANGLE_MAX);
         }
 
-        // [TODO] if (camera->angle.v == 90 || camera->angle.v == 270)
-        // [TODO]   do something for the 'up' vector
+        /* [TODO] if (camera->angle.v == 90 || camera->angle.v == 270) */
+        /* [TODO]   do something for the 'up' vector */
 
         oth_camera_update(camera);
 }
@@ -125,8 +125,8 @@ oth_camera_move_down(Camera* camera)
                         CLAMP(V_ANGLE_MIN, camera->angle.v, V_ANGLE_MAX);
         }
 
-        // [TODO] if (camera->angle.v == 90 || camera->angle.v == 270)
-        // [TODO]   do something for the 'up' vector
+        /* [TODO] if (camera->angle.v == 90 || camera->angle.v == 270) */
+        /* [TODO]   do something for the 'up' vector */
 
         oth_camera_update(camera);
 }

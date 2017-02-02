@@ -19,7 +19,7 @@ oth_mouse(int button, int state, int x, int y)
 {
         Square* square;
         GLint hits;
-        GLuint name_stack[100]; // [FIXME] unnecesserily big ?
+        GLuint name_stack[100]; /* [FIXME] unnecesserily big ? */
         GLint viewport[4];
         Board* board = current_board;
         Camera* camera = current_camera;
@@ -43,7 +43,7 @@ oth_mouse(int button, int state, int x, int y)
 
         /* Initialize name stack and enter selection mode */
         glInitNames();
-        glSelectBuffer(100, name_stack);        // [FIXME]
+        glSelectBuffer(100, name_stack);        /* [FIXME] */
         glRenderMode(GL_SELECT);
 
         /* Force redraw */
