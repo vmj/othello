@@ -72,9 +72,9 @@ add_custom_command(
 )
 add_custom_command(
         OUTPUT ${PROJECT_BINARY_DIR}/othello.1.xml
-        DEPENDS ${PROJECT_SOURCE_DIR}/othello.1.txt
+        DEPENDS ${PROJECT_SOURCE_DIR}/doc/othello.1.txt
         COMMAND ${ASCIIDOC}
-        ARGS -b docbook -d manpage -o ${PROJECT_BINARY_DIR}/othello.1.xml ${PROJECT_SOURCE_DIR}/othello.1.txt
+        ARGS -b docbook -d manpage -o ${PROJECT_BINARY_DIR}/othello.1.xml ${PROJECT_SOURCE_DIR}/doc/othello.1.txt
         COMMENT "Converting othello.1.txt to othello.1.xml (AsciiDoc to DocBook)"
 )
 add_custom_target(man ALL
@@ -92,9 +92,9 @@ add_custom_command(
 )
 add_custom_command(
         OUTPUT ${PROJECT_BINARY_DIR}/othello.1.html
-        DEPENDS ${PROJECT_SOURCE_DIR}/othello.1.txt
+        DEPENDS ${PROJECT_SOURCE_DIR}/doc/othello.1.txt
         COMMAND ${ASCIIDOC}
-        ARGS -b html -d manpage -o ${PROJECT_BINARY_DIR}/othello.1.html ${PROJECT_SOURCE_DIR}/othello.1.txt
+        ARGS -b html -d manpage -o ${PROJECT_BINARY_DIR}/othello.1.html ${PROJECT_SOURCE_DIR}/doc/othello.1.txt
         COMMENT "Converting othello.1.txt to othello.1.html (AsciiDoc to HTML)"
 )
 add_custom_target(html ALL
