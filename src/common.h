@@ -1,12 +1,8 @@
 #ifndef _OTHELLO_COMMON_H_
 #define _OTHELLO_COMMON_H_
 
-#ifdef WIN32
-#define inline
-#endif
 #ifdef __APPLE__
 #define NULL 0
-#define inline
 #endif
 
 #ifdef __c99

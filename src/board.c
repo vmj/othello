@@ -6,10 +6,10 @@
 /* This is declared in flippers.c */
 extern int last_used_flipper;
 
-inline void __board_update_scores(Board* board, int rank, int file);
-inline void __board_update_scores_d(Board* board, int rank, int file, int r_inc,
+void __board_update_scores(Board* board, int rank, int file);
+void __board_update_scores_d(Board* board, int rank, int file, int r_inc,
                                     int f_inc);
-inline void __board_flip_disks_d(Board* board, int disk, int rank, int file, int r_inc,
+void __board_flip_disks_d(Board* board, int disk, int rank, int file, int r_inc,
                                  int f_inc);
 
 /**
@@ -161,7 +161,7 @@ oth_board_reset(Board* board)
 /**
  * Helper function for above.
  */
-inline void
+void
 __board_update_scores(Board* board, int rank, int file)
 {
         __board_update_scores_d(board, rank, file, 1, 0);      /* N  */
@@ -177,7 +177,7 @@ __board_update_scores(Board* board, int rank, int file)
 /**
  * Helper function for above. Counts the score in one direction.
  */
-inline void
+void
 __board_update_scores_d(Board* board, int rank, int file, int r_inc, int f_inc)
 {
         Square *square = board(board, rank, file);
@@ -247,7 +247,7 @@ oth_board_flip_disks(Board* board, Square* square)
 /**
  * Helper function for above. Does it in one direction.
  */
-inline void
+void
 __board_flip_disks_d(Board* board, int disk, int rank, int file, int r_inc, int f_inc)
 {
         int flipper;
