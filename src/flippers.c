@@ -16,16 +16,17 @@
 static int nflippers;
 
 /* This is to jump out of the animation early when only few disks are flipping.
- * Index of the last used Flipper in *flippers. Maintained by 
- * oth_board_flip_disks and used by oth_flippers_update. 
+ * Index of the last used Flipper in *flippers.
  */
-int last_used_flipper;
+static int last_used_flipper;
 
 /* Animation precision */
 static unsigned char precision;
 
 /* This is used to hold step sizes */
 static Flipper stepper;
+
+void __oth_flippers_flip_disks(Board* board, Square* square, int disk, Bool first, void* user_data);
 
 /**
  * Initialize flippers "subsystem".
@@ -121,12 +122,12 @@ oth_flippers_reset()
                 flippers[i].rotation.z = 1.0f;
                 for (j = 0; j < 3; ++j)
                 {
-                        if (shift == DARK)
+                        if (oth_shift_current() == DARK)
                         {
                                 /* We're going to flip light to dark */
                                 flippers[i].diffuse[j] = light_diffuse[j];
                         }
-                        else if (shift == LIGHT)
+                        else if (oth_shift_current() == LIGHT)
                         {
                                 /* We're going to flip dark to light */
                                 flippers[i].diffuse[j] = dark_diffuse[j];
@@ -164,12 +165,12 @@ oth_flippers_update(void)
         }
 
         /* Update flippers */
-        if (shift != NONE)
+        if (oth_shift_current() != NONE)
         {
                 for (flipper = 0; flipper < nflippers - j; ++flipper)
                 {
                         p = &flippers[flipper];
-                        switch (shift)
+                        switch (oth_shift_current())
                         {
                         case DARK:
                                 p->translation.x =
@@ -245,4 +246,30 @@ oth_flippers_update(void)
         }
 
         glutPostRedisplay();
+}
+
+void
+oth_flippers_flip_disks(Board* board, Square* square)
+{
+    int flipper = 0;
+    last_used_flipper = 0;
+
+    oth_board_flip_disks(board, square, __oth_flippers_flip_disks, &flipper);
+}
+
+void
+__oth_flippers_flip_disks(Board* board, Square* square, int disk, Bool first, void* user_data)
+{
+    int *flipper = (int*) user_data;
+
+    if (first)
+        *flipper = 0;
+
+    square->disk = disk;
+    square->flipping = true;
+    square->flipper = &flippers[*flipper];
+
+    last_used_flipper = MAX((*flipper), last_used_flipper);
+
+    *flipper = (*flipper) + 1;
 }

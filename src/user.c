@@ -11,6 +11,8 @@
 #include "board.h"
 #include "user.h"
 
+#define SELECT_BUFFER_SIZE 4
+
 /**
  * GLUT callback to handle mouse.
  */
@@ -19,7 +21,7 @@ oth_mouse(int button, int state, int x, int y)
 {
         Square* square;
         GLint hits;
-        GLuint name_stack[100]; /* [FIXME] unnecesserily big ? */
+        GLuint name_stack[SELECT_BUFFER_SIZE];
         GLint viewport[4];
         Board* board = current_board;
         Camera* camera = current_camera;
@@ -43,7 +45,7 @@ oth_mouse(int button, int state, int x, int y)
 
         /* Initialize name stack and enter selection mode */
         glInitNames();
-        glSelectBuffer(100, name_stack);        /* [FIXME] */
+        glSelectBuffer(SELECT_BUFFER_SIZE, name_stack);        /* [FIXME] */
         glRenderMode(GL_SELECT);
 
         /* Force redraw */
@@ -58,16 +60,11 @@ oth_mouse(int button, int state, int x, int y)
 
         /* Validate choice */
         hits = glRenderMode(GL_RENDER);
-        if (hits != 1)
-                return;
-        square = oth_board_square(board, name_stack[3]);
-        if (!oth_shift_valid(board, square))
-        {
-                /* invalid choice */
-                return;
+        if (hits == 1) {
+                square = oth_board_square(board, name_stack[3]);
+                if (oth_shift_valid(board, square)) {
+                        oth_shift_update(board, square);
+                        glutPostRedisplay();
+                }
         }
-
-        /* Process valid choice */
-        oth_shift_update(board, square);
-        glutPostRedisplay();
 }

@@ -3,10 +3,12 @@
 #include "common.h"
 #include "transform.h"
 
+typedef enum { EMPTY, BLACK, WHITE } Disk;
+
 /* One square on the board. */
 typedef struct {
         int name;
-        enum { EMPTY, BLACK, WHITE } disk;
+        Disk disk;
         struct { int dark; int light; } score;
         Bool flipping;
         Flipper *flipper;
@@ -36,6 +38,17 @@ typedef struct {
         int files;
 } Board;
 
+/**
+ * A callback function to flip one disk.
+ *
+ * @param   board       Board on which the disk is flipped.
+ * @param   square      Square on which the disk is flipped.
+ * @param   disk        Color of the disk after flipping.
+ * @param   first       true if this is the first disk in one direction.
+ * @param   user_data   Callback state.
+ */
+typedef void (*FlipDiskFunc)(Board* board, Square* square, int disk, Bool first, void* user_data);
+
 /* Limits for board size. */
 #define BOARD_SIZE_MIN  4
 #define BOARD_SIZE_MAX 98
@@ -53,10 +66,8 @@ Board*   oth_board_init         (int *argc, char **argv);
 void     oth_board_free         (Board* board);
 void     oth_board_reset        (Board* board);
 
-void     oth_board_flip_disks   (Board* board, Square* square);
-/*
-Square*  oth_board_walk         (Board* board); -> (Square*, int, int)
-*/
+void     oth_board_flip_disks   (Board* board, Square* square, FlipDiskFunc flip_disk, void* user_data);
+
 Square*  oth_board_square       (Board* board, int name);
 
 #endif                          /* _OTHELLO_BOARD_H_ */

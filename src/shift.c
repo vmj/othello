@@ -12,6 +12,10 @@
 #include "user.h"
 #include "shift.h"
 
+/* Whose turn is it? */
+static Shift shift;
+
+
 void __oth_shift_game_over(Board* board);
 
 void __shift_set_comp(void);
@@ -120,7 +124,7 @@ oth_shift_update(Board* board, Square* square)
                 return;
 
         square->disk = (shift == DARK ? BLACK : WHITE);
-        oth_board_flip_disks(board, square);
+        oth_flippers_flip_disks(board, square);
 
         switch (shift)
         {
@@ -194,6 +198,12 @@ oth_shift_reset(Board* board)
         {                       /* shift == NONE, Game Over animation done. */
                 fprintf(stderr, "Game Over!\n");
         }
+}
+
+Shift
+oth_shift_current()
+{
+    return shift;
 }
 
 /**

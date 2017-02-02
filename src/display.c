@@ -387,9 +387,9 @@ oth_display(void)
 
                                 if (square->disk != EMPTY)
                                         continue;
-                                if (shift == LIGHT && square->score.light == 0)
+                                if (oth_shift_current() == LIGHT && square->score.light == 0)
                                         continue;
-                                if (shift == DARK && square->score.dark == 0)
+                                if (oth_shift_current() == DARK && square->score.dark == 0)
                                         continue;
 
                                 z1 = file * SQUARESIZE;

@@ -3,14 +3,12 @@
 #include "common.h"
 #include "board.h"
 
-/* This is declared in flippers.c */
-extern int last_used_flipper;
-
+void __board_update_scores(Board* board, int rank, int file);
 void __board_update_scores(Board* board, int rank, int file);
 void __board_update_scores_d(Board* board, int rank, int file, int r_inc,
                                     int f_inc);
-void __board_flip_disks_d(Board* board, int disk, int rank, int file, int r_inc,
-                                 int f_inc);
+void __board_flip_disks_d(Board* board, int disk, int rank, int file, int r_inc, int f_inc,
+                          FlipDiskFunc flip_disk, void* user_data);
 
 /**
  * Initialize board "subsystem".
@@ -223,34 +221,31 @@ __board_update_scores_d(Board* board, int rank, int file, int r_inc, int f_inc)
  * Sets disks for flipping around given square.
  */
 void
-oth_board_flip_disks(Board* board, Square* square)
+oth_board_flip_disks(Board* board, Square* square, FlipDiskFunc flip_disk, void* user_data)
 {
         int disk = square->disk;
         int rank = rank(board, square->name);
         int file = file(board, square->name);
 
-        last_used_flipper = 0;
-
         if (disk == EMPTY)
                 return;
 
-        __board_flip_disks_d(board, disk, rank, file, 1, 0);      /* N  */
-        __board_flip_disks_d(board, disk, rank, file, 1, 1);      /* NE */
-        __board_flip_disks_d(board, disk, rank, file, 0, 1);      /* E  */
-        __board_flip_disks_d(board, disk, rank, file, -1, 1);     /* SE */
-        __board_flip_disks_d(board, disk, rank, file, -1, 0);     /* S  */
-        __board_flip_disks_d(board, disk, rank, file, -1, -1);    /* SW */
-        __board_flip_disks_d(board, disk, rank, file, 0, -1);     /* W  */
-        __board_flip_disks_d(board, disk, rank, file, 1, -1);     /* NW */
+        __board_flip_disks_d(board, disk, rank, file, 1, 0, flip_disk, user_data);      /* N  */
+        __board_flip_disks_d(board, disk, rank, file, 1, 1, flip_disk, user_data);      /* NE */
+        __board_flip_disks_d(board, disk, rank, file, 0, 1, flip_disk, user_data);      /* E  */
+        __board_flip_disks_d(board, disk, rank, file, -1, 1, flip_disk, user_data);     /* SE */
+        __board_flip_disks_d(board, disk, rank, file, -1, 0, flip_disk, user_data);     /* S  */
+        __board_flip_disks_d(board, disk, rank, file, -1, -1, flip_disk, user_data);    /* SW */
+        __board_flip_disks_d(board, disk, rank, file, 0, -1, flip_disk, user_data);     /* W  */
+        __board_flip_disks_d(board, disk, rank, file, 1, -1, flip_disk, user_data);     /* NW */
 }
 
 /**
  * Helper function for above. Does it in one direction.
  */
 void
-__board_flip_disks_d(Board* board, int disk, int rank, int file, int r_inc, int f_inc)
+__board_flip_disks_d(Board* board, int disk, int rank, int file, int r_inc, int f_inc, FlipDiskFunc flip_disk, void* user_data)
 {
-        int flipper;
         register int r = rank + r_inc;
         register int f = file + f_inc;
         Bool found = false;
@@ -275,22 +270,18 @@ __board_flip_disks_d(Board* board, int disk, int rank, int file, int r_inc, int 
                 return;
 
         /* Flip disks */
-        flipper = 0;
         r = rank + r_inc;
         f = file + f_inc;
         square = board(board, r, f);
+        Bool first = true;
         while (square->disk != disk)
         {
-                square->disk = disk;
-                square->flipping = true;
-                square->flipper = &flippers[flipper];
+                flip_disk(board, square, disk, first, user_data);
 
-                last_used_flipper = MAX(flipper, last_used_flipper);
-
-                flipper++;
                 r += r_inc;
                 f += f_inc;
                 square = board(board, r, f);
+                first = false;
         }
 }
 
