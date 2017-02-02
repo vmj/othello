@@ -10,5 +10,6 @@ addons:
   apt:
     packages:
       - freeglut3-dev
+      - libxmu-dev
       - asciidoc
       - xmlto
