@@ -223,9 +223,11 @@ __board_update_scores_d(Board* board, int rank, int file, int r_inc, int f_inc)
  * Sets disks for flipping around given square.
  */
 void
-oth_board_flip_disks(Board* board, int rank, int file)
+oth_board_flip_disks(Board* board, Square* square)
 {
-        int disk = board(board, rank, file)->disk;
+        int disk = square->disk;
+        int rank = rank(board, square->name);
+        int file = file(board, square->name);
 
         last_used_flipper = 0;
 
@@ -290,4 +292,10 @@ __board_flip_disks_d(Board* board, int disk, int rank, int file, int r_inc, int 
                 f += f_inc;
                 square = board(board, r, f);
         }
+}
+
+Square*
+oth_board_square(Board* board, int name)
+{
+        return &(board->squares[name]);
 }

@@ -53,8 +53,10 @@ Board*   oth_board_init         (int *argc, char **argv);
 void     oth_board_free         (Board* board);
 void     oth_board_reset        (Board* board);
 
-void     oth_board_flip_disks   (Board* board,
-                                 int rank,
-                                 int file);
+void     oth_board_flip_disks   (Board* board, Square* square);
+/*
+Square*  oth_board_walk         (Board* board); -> (Square*, int, int)
+*/
+Square*  oth_board_square       (Board* board, int name);
 
 #endif                          /* _OTHELLO_BOARD_H_ */

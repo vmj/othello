@@ -91,10 +91,8 @@ oth_shift_free(void)
  * Returns true if current player is allowed to put her disk in given square.
  */
 Bool
-oth_shift_valid(Board* board, int rank, int file)
+oth_shift_valid(Board* board, Square* square)
 {
-        Square *square = board(board, rank, file);
-
         if (square->disk != EMPTY)
                 return false;
         if (shift == DARK && square->score.dark == 0)
@@ -112,13 +110,13 @@ oth_shift_valid(Board* board, int rank, int file)
  * for flipping and changes current player and starts animation.
  */
 void
-oth_shift_update(Board* board, int rank, int file)
+oth_shift_update(Board* board, Square* square)
 {
-        if (!oth_shift_valid(board, rank, file))
+        if (!oth_shift_valid(board, square))
                 return;
 
-        board(board, rank, file)->disk = (shift == DARK ? BLACK : WHITE);
-        oth_board_flip_disks(board, rank, file);
+        square->disk = (shift == DARK ? BLACK : WHITE);
+        oth_board_flip_disks(board, square);
 
         switch (shift)
         {

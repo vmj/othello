@@ -9,20 +9,8 @@
 void
 oth_comp(void)
 {
-        int rank, file;
         Board* board = current_board;
+        Square* square = shift == DARK ? board->best_dark : board->best_light;
 
-        /* Who Am I ? */
-        if (shift == DARK)
-        {
-                rank = rank(board, board->best_dark->name);
-                file = file(board, board->best_dark->name);
-        }
-        else
-        {                       /* LIGHT */
-                rank = rank(board, board->best_light->name);
-                file = file(board, board->best_light->name);
-        }
-
-        oth_shift_update(board, rank, file);
+        oth_shift_update(board, square);
 }

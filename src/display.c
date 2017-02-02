@@ -5,6 +5,7 @@
 #include "flippers.h"
 #include "shift.h"
 #include "display.h"
+#include "board.h"
 
 /* Displaylist IDs */
 #define BOARD 1
@@ -378,8 +379,7 @@ oth_display(void)
 
                         for (file = 0; file < board->files; ++file)
                         {
-                                i = index(board, rank, file);
-                                square = &(board->squares[i]);
+                                square = board(board, rank, file);
 
                                 if (square->disk != EMPTY)
                                         continue;
@@ -391,7 +391,7 @@ oth_display(void)
                                 z1 = file * SQUARESIZE;
                                 z2 = z1 + SQUARESIZE;
 
-                                glPushName(i);
+                                glPushName(square->name);
                                 glBegin(GL_POLYGON);
                                 glVertex3f(x1, -DISKHEIGHT / 2, z1);
                                 glVertex3f(x1, -DISKHEIGHT / 2, z2);
