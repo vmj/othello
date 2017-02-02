@@ -157,12 +157,12 @@ oth_shift_reset(Board* board)
                 if (board->best_light)
                 {
                         shift = LIGHT;
-                        oth_flippers_reset(board);
+                        oth_flippers_reset();
                         __shift_set_light();
                 }
                 else if (board->best_dark)
                 {
-                        oth_flippers_reset(board);
+                        oth_flippers_reset();
                         __shift_set_dark();
                 }
                 else
@@ -176,12 +176,12 @@ oth_shift_reset(Board* board)
                 if (board->best_dark)
                 {
                         shift = DARK;
-                        oth_flippers_reset(board);
+                        oth_flippers_reset();
                         __shift_set_dark();
                 }
                 else if (board->best_light)
                 {
-                        oth_flippers_reset(board);
+                        oth_flippers_reset();
                         __shift_set_light();
                 }
                 else
@@ -228,7 +228,7 @@ __oth_shift_game_over(Board* board)
         fprintf(stderr, "Darks: %i, Lights: %i\n", darks, lights);
 
         /* Flip'em */
-        oth_flippers_reset(board);
+        oth_flippers_reset();
 
         for (rank = 0; rank < board->ranks; ++rank)
         {

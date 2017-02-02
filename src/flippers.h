@@ -10,7 +10,7 @@
 
 Bool oth_flippers_init(Board* board, int *argc, char **argv);
 void oth_flippers_free(void);
-void oth_flippers_reset(Board* board);
+void oth_flippers_reset();
 
 void oth_flippers_update(void);
 

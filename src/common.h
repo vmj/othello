@@ -2,7 +2,9 @@
 #define _OTHELLO_COMMON_H_
 
 #ifdef __APPLE__
+#ifndef NULL
 #define NULL 0
+#endif
 #endif
 
 #ifdef __c99

@@ -13,7 +13,7 @@
 #include "flippers.h"
 
 /* We need this many flippers */
-#define FLIPPERS        (MAX (board->ranks, board->files) - 2)
+static int nflippers;
 
 /* This is to jump out of the animation early when only few disks are flipping.
  * Index of the last used Flipper in *flippers. Maintained by 
@@ -22,10 +22,10 @@
 int last_used_flipper;
 
 /* Animation precision */
-unsigned char precision;
+static unsigned char precision;
 
 /* This is used to hold step sizes */
-Flipper stepper;
+static Flipper stepper;
 
 /**
  * Initialize flippers "subsystem".
@@ -72,7 +72,8 @@ oth_flippers_init(Board* board, int *argc, char **argv)
         }
 
         /* Initialize flippers */
-        flippers = (Flipper *) calloc(FLIPPERS, sizeof(Flipper));
+        nflippers = MAX (board->ranks, board->files) - 2;
+        flippers = (Flipper *) calloc(nflippers, sizeof(Flipper));
         if (flippers == NULL)
         {
                 fprintf(stderr, "Memory exhaustion.\n");
@@ -90,7 +91,7 @@ oth_flippers_init(Board* board, int *argc, char **argv)
                 stepper.specular[i] = dark_specular[i];
         }
 
-        oth_flippers_reset(board);
+        oth_flippers_reset();
         return true;
 }
 
@@ -108,13 +109,12 @@ oth_flippers_free()
  * Reset flippers to their starting values.
  */
 void
-oth_flippers_reset(Board* board)
+oth_flippers_reset()
 {
         register int i, j;
-        int f = FLIPPERS;
 
         /* reset starting values */
-        for (i = 0; i < f; ++i)
+        for (i = 0; i < nflippers; ++i)
         {
                 flippers[i].translation.x = 0.0f;
                 flippers[i].rotation.a = 0.0f;
@@ -148,18 +148,17 @@ oth_flippers_update(void)
 {
         Flipper *p;
         int flipper, i;
-        Board* board = current_board;
         /* j controls the wave effect. */
         static int j = -1;
 
         /* Initialize j (first pass) */
         if (j == -1)
         {
-                j = FLIPPERS - 1;
+                j = nflippers - 1;
         }
 
         /* Start flipping next disk? */
-        if (flippers[FLIPPERS - j - 1].rotation.a >= (180 / FLIPPERS))
+        if (flippers[nflippers - j - 1].rotation.a >= (180 / nflippers))
         {
                 j = (j > 0) ? j - 1 : 0;
         }
@@ -167,7 +166,7 @@ oth_flippers_update(void)
         /* Update flippers */
         if (shift != NONE)
         {
-                for (flipper = 0; flipper < FLIPPERS - j; ++flipper)
+                for (flipper = 0; flipper < nflippers - j; ++flipper)
                 {
                         p = &flippers[flipper];
                         switch (shift)
@@ -242,7 +241,7 @@ oth_flippers_update(void)
         if (flippers[last_used_flipper].rotation.a >= 180)
         {
                 j = -1;
-                oth_shift_reset(board);
+                oth_shift_reset(current_board);
         }
 
         glutPostRedisplay();
