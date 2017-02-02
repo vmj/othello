@@ -11,6 +11,7 @@
 #include "flippers.h"
 #include "user.h"
 #include "shift.h"
+#include "board.h"
 
 /* Whose turn is it? */
 static Shift shift;
@@ -212,77 +213,8 @@ oth_shift_current()
 void
 __oth_shift_game_over(Board* board)
 {
-        int darks = 0, lights = 0;
-        int rank, file;
-        Square *square = NULL;
-
-        /* Count the result */
-        for (rank = 0; rank < board->ranks; ++rank)
-        {
-                for (file = 0; file < board->files; ++file)
-                {
-                        switch (board(board, rank, file)->disk)
-                        {
-                        case EMPTY:
-                                break;
-                        case BLACK:
-                                darks++;
-                                break;
-                        case WHITE:
-                                lights++;
-                                break;
-                        }
-                }
-        }
-
-        fprintf(stderr, "Darks: %i, Lights: %i\n", darks, lights);
-
-        /* Flip'em */
-        oth_flippers_reset();
-
-        for (rank = 0; rank < board->ranks; ++rank)
-        {
-                for (file = 0; file < board->files; ++file)
-                {
-                        square = board(board, rank, file);
-                        switch (square->disk)
-                        {
-                        case EMPTY:
-                                break;
-                        case BLACK:
-                                if (darks == 0)
-                                {
-                                        /* turn it to light */
-                                        square->disk = WHITE;
-                                        square->flipping = true;
-                                        square->flipper = &flippers[1];
-                                        lights--;
-                                }
-                                else
-                                {
-                                        /* just count it */
-                                        darks--;
-                                }
-                                break;
-                        case WHITE:
-                                if (darks > 0)
-                                {
-                                        /* turn it to dark */
-                                        square->disk = BLACK;
-                                        square->flipping = true;
-                                        square->flipper = &flippers[0];
-                                        darks--;
-                                }
-                                else
-                                {
-                                        /* just count it */
-                                        lights--;
-                                }
-                                break;
-                        }
-                }
-        }
-
+        fprintf(stderr, "Darks: %i, Lights: %i\n", board->blacks, board->whites);
+        oth_flippers_game_over(board);
         glutIdleFunc(oth_flippers_update);
 }
 

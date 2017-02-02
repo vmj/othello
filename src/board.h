@@ -26,16 +26,31 @@ typedef struct {
 #define SQUARESIZE 1
 
 typedef struct {
-        /* Array of Squares */
+        /*
+         * Array of Squares
+         */
         Square *squares;
-        /* Pointer to the highest score Square for the dark. */
+        /*
+         * Pointer to an empty square that has highest score for the dark.
+         */
         Square *best_dark;
-        /* Pointer to the highest score Square for the light. */
+        /*
+         * Pointer to an empty square that has highest score for the light.
+         */
         Square *best_light;
-        /* Actual board size. User can define them using -r and -f
-         * options. */
+        /*
+         * Actual board size. User can define them using -r and -f options.
+         */
         int ranks;
         int files;
+        /*
+         * Number of black disks currently on the board.
+         */
+        int blacks;
+        /*
+         * Number of white disks currently on the board.
+         */
+        int whites;
 } Board;
 
 /**

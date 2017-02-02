@@ -15,7 +15,4 @@ typedef struct {
         float specular[4];
 } Flipper;
 
-/* Array of those to support wave-animation */
-Flipper *flippers;
-
 #endif                         /* _OTHELLO_TRANSFORM_H_ */

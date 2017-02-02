@@ -127,6 +127,9 @@ oth_board_reset(Board* board)
         /* Reset "bests" */
         board->best_dark = board->best_light = NULL;
 
+        board->blacks = 0;
+        board->whites = 0;
+
         for (rank = 0; rank < board->ranks; ++rank)
         {
                 for (file = 0; file < board->files; ++file)
@@ -151,6 +154,10 @@ oth_board_reset(Board* board)
                                         board->best_light = square;
                                         best_score_l = square->score.light;
                                 }
+                        } else if (square->disk == BLACK) {
+                            board->blacks++;
+                        } else if (square->disk == WHITE) {
+                            board->whites++;
                         }
                 }
         }

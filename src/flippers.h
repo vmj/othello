@@ -15,5 +15,6 @@ void oth_flippers_reset();
 void oth_flippers_update(void);
 
 void oth_flippers_flip_disks(Board* board, Square* square);
+void oth_flippers_game_over(Board* board);
 
 #endif                          /* _OTHELLO_FLIPPERS_H_ */

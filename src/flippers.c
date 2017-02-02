@@ -15,6 +15,9 @@
 /* We need this many flippers */
 static int nflippers;
 
+/* Array of those to support wave-animation */
+static Flipper *flippers;
+
 /* This is to jump out of the animation early when only few disks are flipping.
  * Index of the last used Flipper in *flippers.
  */
@@ -272,4 +275,60 @@ __oth_flippers_flip_disks(Board* board, Square* square, int disk, Bool first, vo
     last_used_flipper = MAX((*flipper), last_used_flipper);
 
     *flipper = (*flipper) + 1;
+}
+
+void
+oth_flippers_game_over(Board* board)
+{
+        int darks, lights;
+        int rank, file;
+        Square *square = NULL;
+
+        darks = board->blacks;
+        lights = board->whites;
+
+        oth_flippers_reset();
+
+        for (rank = 0; rank < board->ranks; ++rank)
+        {
+                for (file = 0; file < board->files; ++file)
+                {
+                        square = board(board, rank, file);
+                        switch (square->disk)
+                        {
+                                case EMPTY:
+                                        break;
+                                case BLACK:
+                                        if (darks == 0)
+                                        {
+                                                /* turn it to light */
+                                                square->disk = WHITE;
+                                                square->flipping = true;
+                                                square->flipper = &flippers[1];
+                                                lights--;
+                                        }
+                                        else
+                                        {
+                                                /* just count it */
+                                                darks--;
+                                        }
+                                break;
+                                case WHITE:
+                                        if (darks > 0)
+                                        {
+                                                /* turn it to dark */
+                                                square->disk = BLACK;
+                                                square->flipping = true;
+                                                square->flipper = &flippers[0];
+                                                darks--;
+                                        }
+                                        else
+                                        {
+                                                /* just count it */
+                                                lights--;
+                                        }
+                                break;
+                        }
+                }
+        }
 }
