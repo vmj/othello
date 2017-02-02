@@ -1,7 +1,7 @@
 #ifndef _OTHELLO_BOARD_H_
 #define _OTHELLO_BOARD_H_
 #include "common.h"
-#include "transform.h"           // Flipper
+#include "transform.h"
 
 /* One square on the board. */
 typedef struct {

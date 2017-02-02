@@ -8,8 +8,8 @@
 #include "global.h"
 #include "common.h"
 #include "board.h"
-#include "display.h"            // materials (light_* and dark_*)
-#include "shift.h"              // shift
+#include "display.h"
+#include "shift.h"
 #include "flippers.h"
 
 /* We need this many flippers */

@@ -1,7 +1,7 @@
 #ifndef _OTHELLO_SHIFT_H_
 #define _OTHELLO_SHIFT_H_
 #include "common.h"
-#include "board.h" // Board*
+#include "board.h"
 
 /* Shift enum.  NONE is game over. */
 typedef enum { INITIAL, DARK, LIGHT, NONE } Shift;
