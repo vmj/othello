@@ -390,11 +390,11 @@ __oth_display_selection(Board* board, Square* square, void* user_data)
                 return;
         switch (oth_shift_current()) {
                 case DARK:
-                        if (square->score.dark == 0)
+                        if (square->score.blacks == 0)
                                 return;
                         break;
                 case LIGHT:
-                        if (square->score.light == 0)
+                        if (square->score.whites == 0)
                                 return;
                         break;
                 default: /* INITIAL or NONE */

@@ -281,13 +281,10 @@ __oth_flippers_flip_disks(Board* board, Square* square, Disk disk, Bool first, v
 
 void
 oth_flippers_game_over(Board* board) {
-        struct {
-            int blacks;
-            int whites;
-        } score;
+        Score score;
 
-        score.blacks = board->blacks;
-        score.whites = board->whites;
+        score.blacks = board->score.blacks;
+        score.whites = board->score.whites;
 
         oth_flippers_reset();
         oth_board_for_each_square(board, __oth_flippers_game_over, &score);
@@ -295,10 +292,7 @@ oth_flippers_game_over(Board* board) {
 
 void
 __oth_flippers_game_over(Board* board, Square* square, void* user_data) {
-        struct {
-            int blacks;
-            int whites;
-        } *score = user_data;
+        Score *score = user_data;
 
         switch (square->disk) {
                 case BLACK:

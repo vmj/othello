@@ -5,13 +5,15 @@
 
 typedef enum { EMPTY, BLACK, WHITE } Disk;
 
+typedef struct { unsigned int blacks; unsigned int whites; } Score;
+
 /* One square on the board. */
 typedef struct {
-        int name;
-        int rank;
-        int file;
+        unsigned int name;
+        unsigned int rank;
+        unsigned int file;
         Disk disk;
-        struct { int dark; int light; } score;
+        Score score;
         Bool flipping;
         Flipper *flipper;
 } Square;
@@ -25,7 +27,7 @@ typedef struct {
  * trouble of having all the calculations done in terms of square size,
  * let's just keep this around.
  */
-#define SQUARESIZE 1
+#define SQUARESIZE ((unsigned)1)
 
 typedef struct {
         /*
@@ -46,13 +48,11 @@ typedef struct {
         int ranks;
         int files;
         /*
-         * Number of black disks currently on the board.
+         * Current number of black or white disks on the board.
+         *
+         * I.e. the game score.
          */
-        int blacks;
-        /*
-         * Number of white disks currently on the board.
-         */
-        int whites;
+        Score score;
 } Board;
 
 /**
@@ -69,17 +69,9 @@ typedef void (*FlipDiskFunc)(Board* board, Square* square, Disk disk, Bool first
 typedef void (*SquareVisitor)(Board* board, Square* square, void* user_data);
 
 /* Limits for board size. */
-#define BOARD_SIZE_MIN  4
-#define BOARD_SIZE_MAX 98
-#define BOARD_SIZE_DEF  8
-
-/* Macros to convert between index and (rank, file) information. */
-#define rank(board, index)          ((index) / ((board)->files))
-#define file(board, index)          ((index) % ((board)->files))
-#define index(board, rank, file)    (((board)->files) * (rank) + (file))
-
-/* Macro to access board as if it were two dimensional. */
-#define board(board, rank, file)    (&((board)->squares[ index((board), (rank), (file)) ]))
+#define BOARD_SIZE_MIN  ((unsigned)4)
+#define BOARD_SIZE_MAX  ((unsigned)98)
+#define BOARD_SIZE_DEF  ((unsigned)8)
 
 Board*   oth_board_init         (int *argc, char **argv);
 void     oth_board_free         (Board* board);

@@ -104,9 +104,9 @@ oth_shift_valid(Board* board, Square* square)
 {
         if (square->disk != EMPTY)
                 return false;
-        if (shift == DARK && square->score.dark == 0)
+        if (shift == DARK && square->score.blacks == 0)
                 return false;
-        else if (shift == LIGHT && square->score.light == 0)
+        else if (shift == LIGHT && square->score.whites == 0)
                 return false;
         else if (shift == NONE)
                 return false;
@@ -213,7 +213,7 @@ oth_shift_current()
 void
 __oth_shift_game_over(Board* board)
 {
-        fprintf(stderr, "Darks: %i, Lights: %i\n", board->blacks, board->whites);
+        fprintf(stderr, "Darks: %i, Lights: %i\n", board->score.blacks, board->score.whites);
         oth_flippers_game_over(board);
         glutIdleFunc(oth_flippers_update);
 }

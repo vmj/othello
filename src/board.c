@@ -3,6 +3,15 @@
 #include "common.h"
 #include "board.h"
 
+/* Macros to convert between index and (rank, file) information. */
+#define rank(board, index)          ((index) / ((board)->files))
+#define file(board, index)          ((index) % ((board)->files))
+#define index(board, rank, file)    (((board)->files) * (rank) + (file))
+
+/* Macro to access board as if it were two dimensional. */
+#define board(board, rank, file)    (&((board)->squares[ index((board), (rank), (file)) ]))
+
+
 void __oth_board_reset(Board* board, Square* square, void* user_data);
 
 void __board_update_scores(Board* board, Square* square);
@@ -15,11 +24,12 @@ void __board_flip_disks_d(Board* board, Square* orig_square, int r_inc, int f_in
 Board*
 oth_board_init(int *argc, char **argv)
 {
-        int i, rank, file;
+        unsigned int i, rank, file, unset_size;
         Board* board = NULL;
         Square* squares = NULL;
 
-        rank = file = -1;
+        unset_size = BOARD_SIZE_MIN-1;
+        rank = file = unset_size;
 
         for (i = 1; i < *argc; ++i)
         {
@@ -58,14 +68,14 @@ oth_board_init(int *argc, char **argv)
         }
 
         /* Set RANKS and FILES */
-        if ((rank == -1 && file != -1) || (rank != -1 && file == -1))
+        if ((rank == unset_size && file != unset_size) || (rank != unset_size && file == unset_size))
         {                       /* XOR */
                 rank = file = MAX(rank, file);
         }
         else
         {
-                rank = (rank != -1) ? rank : BOARD_SIZE_DEF;
-                file = (file != -1) ? file : BOARD_SIZE_DEF;
+                rank = (rank != unset_size) ? rank : BOARD_SIZE_DEF;
+                file = (file != unset_size) ? file : BOARD_SIZE_DEF;
         }
 
         /* Initialize board */
@@ -82,13 +92,13 @@ oth_board_init(int *argc, char **argv)
                 board = NULL;
                 return NULL;
         }
-        while (--i >= 0)
-        {
+        do {
+                i--;
                 squares[i].name = i;
                 squares[i].rank = rank(board, i);
                 squares[i].file = file(board, i);
                 squares[i].disk = EMPTY;
-        }
+        } while (i > 0);
 
         /* Set starting positions */
         board(board, rank / 2, file / 2)->disk = WHITE;
@@ -123,8 +133,8 @@ oth_board_reset(Board* board) {
     /* Reset "bests" */
     board->best_dark = board->best_light = oth_board_square(board, 0);
 
-    board->blacks = 0;
-    board->whites = 0;
+    board->score.blacks = 0;
+    board->score.whites = 0;
 
     oth_board_for_each_square(board, __oth_board_reset, NULL);
 }
@@ -132,24 +142,24 @@ oth_board_reset(Board* board) {
 void
 __oth_board_reset(Board* board, Square* square, void* user_data) {
     square->flipping = false;
-    square->score.light = 0;
-    square->score.dark = 0;
+    square->score.whites = 0;
+    square->score.blacks = 0;
 
     /* Update scores and "bests" */
     switch (square->disk) {
         case EMPTY:
             __board_update_scores(board, square);
 
-            if (square->score.dark > board->best_dark->score.dark)
+            if (square->score.blacks > board->best_dark->score.blacks)
                 board->best_dark = square;
-            if (square->score.light > board->best_light->score.light)
+            if (square->score.whites > board->best_light->score.whites)
                 board->best_light = square;
             break;
         case BLACK:
-            board->blacks++;
+            board->score.blacks++;
             break;
         case WHITE:
-            board->whites++;
+            board->score.whites++;
             break;
     }
 }
@@ -209,9 +219,9 @@ __board_update_scores_d(Board* board, Square* square, int r_inc, int f_inc)
 
  DONE:
         if (!no_darks)
-                square->score.dark += score_dark;
+                square->score.blacks += score_dark;
         if (!no_lights)
-                square->score.light += score_light;
+                square->score.whites += score_light;
 }
 
 /**

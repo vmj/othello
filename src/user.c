@@ -45,7 +45,7 @@ oth_mouse(int button, int state, int x, int y)
 
         /* Initialize name stack and enter selection mode */
         glInitNames();
-        glSelectBuffer(SELECT_BUFFER_SIZE, name_stack);        /* [FIXME] */
+        glSelectBuffer(SELECT_BUFFER_SIZE, name_stack);
         glRenderMode(GL_SELECT);
 
         /* Force redraw */
