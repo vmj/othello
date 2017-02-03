@@ -64,7 +64,7 @@ typedef struct {
  * @param   first       true if this is the first disk in one direction.
  * @param   user_data   Callback state.
  */
-typedef void (*FlipDiskFunc)(Board* board, Square* square, int disk, Bool first, void* user_data);
+typedef void (*FlipDiskFunc)(Board* board, Square* square, Disk disk, Bool first, void* user_data);
 
 typedef void (*SquareVisitor)(Board* board, Square* square, void* user_data);
 

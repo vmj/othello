@@ -29,7 +29,7 @@ static unsigned char precision;
 /* This is used to hold step sizes */
 static Flipper stepper;
 
-void __oth_flippers_flip_disks(Board* board, Square* square, int disk, Bool first, void* user_data);
+void __oth_flippers_flip_disks(Board* board, Square* square, Disk disk, Bool first, void* user_data);
 void __oth_flippers_game_over(Board* board, Square* square, void* user_data);
 
 /**
@@ -263,7 +263,7 @@ oth_flippers_flip_disks(Board* board, Square* square)
 }
 
 void
-__oth_flippers_flip_disks(Board* board, Square* square, int disk, Bool first, void* user_data)
+__oth_flippers_flip_disks(Board* board, Square* square, Disk disk, Bool first, void* user_data)
 {
     int *flipper = (int*) user_data;
 
