@@ -84,7 +84,7 @@ oth_board_init(int *argc, char **argv)
                 return NULL;
         board->ranks = rank;
         board->files = file;
-        i = rank * file;
+        board->nsquares = i = rank * file;
         board->squares = squares = (Square *) calloc(i, sizeof(Square));
         if (squares == NULL)
         {
@@ -131,7 +131,7 @@ oth_board_free(Board* board)
 void
 oth_board_reset(Board* board) {
     /* Reset "bests" */
-    board->best_dark = board->best_light = oth_board_square(board, 0);
+    board->best_dark = board->best_light = NULL;
 
     board->score.blacks = 0;
     board->score.whites = 0;
@@ -150,10 +150,15 @@ __oth_board_reset(Board* board, Square* square, void* user_data) {
         case EMPTY:
             __board_update_scores(board, square);
 
-            if (square->score.blacks > board->best_dark->score.blacks)
-                board->best_dark = square;
-            if (square->score.whites > board->best_light->score.whites)
-                board->best_light = square;
+            if (board->best_dark == NULL && square->score.blacks > 0)
+                    board->best_dark = square;
+            if (board->best_dark != NULL && square->score.blacks > board->best_dark->score.blacks)
+                    board->best_dark = square;
+
+            if (board->best_light == NULL && square->score.whites > 0)
+                    board->best_light = square;
+            if (board->best_light != NULL && square->score.whites > board->best_light->score.whites)
+                    board->best_light = square;
             break;
         case BLACK:
             board->score.blacks++;
@@ -291,19 +296,15 @@ __board_flip_disks_d(Board* board, Square* orig_square, int r_inc, int f_inc, Fl
 void
 oth_board_for_each_square(Board* board, SquareVisitor visitor, void* user_data)
 {
-    int rank, file;
-    Square *square = NULL;
-    for (rank = 0; rank < board->ranks; ++rank) {
-        for (file = 0; file < board->files; ++file) {
-            square = board(board, rank, file);
-            visitor(board, square, user_data);
-        }
-    }
+    int i = board->nsquares;
+    do {
+        visitor(board, &(board->squares[--i]), user_data);
+    } while(i > 0);
 }
 
 
 Square*
-oth_board_square(Board* board, int name)
+oth_board_square(Board* board, unsigned int name)
 {
         return &(board->squares[name]);
 }

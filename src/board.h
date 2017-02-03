@@ -9,11 +9,26 @@ typedef struct { unsigned int blacks; unsigned int whites; } Score;
 
 /* One square on the board. */
 typedef struct {
+        /* immutable fields */
         unsigned int name;
         unsigned int rank;
         unsigned int file;
-        Disk disk;
+
+        /* read-only, except for board (update scores) */
         Score score;
+
+        /*
+         * read-write, with limited state changes.
+         *
+         * Initially EMPTY.
+         *
+         * EMPTY -> NON-EMPTY, no flipping.
+         *
+         * flipping false -> true, disk to opponent, flipper null -> non-null.
+         *
+         * flipping true -> false, disk stays and flipper clears.
+         */
+        Disk disk;
         Bool flipping;
         Flipper *flipper;
 } Square;
@@ -34,6 +49,10 @@ typedef struct {
          * Array of Squares
          */
         Square *squares;
+        /*
+         * Number of squares in that array.
+         */
+        unsigned int nsquares;
         /*
          * Pointer to an empty square that has highest score for the dark.
          */
@@ -81,6 +100,6 @@ void     oth_board_flip_disks   (Board* board, Square* square, FlipDiskFunc flip
 
 void     oth_board_for_each_square   (Board* board, SquareVisitor visitor, void* user_data);
 
-Square*  oth_board_square       (Board* board, int name);
+Square*  oth_board_square       (Board* board, unsigned int name);
 
 #endif                          /* _OTHELLO_BOARD_H_ */
