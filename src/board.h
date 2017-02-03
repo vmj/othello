@@ -8,6 +8,8 @@ typedef enum { EMPTY, BLACK, WHITE } Disk;
 /* One square on the board. */
 typedef struct {
         int name;
+        int rank;
+        int file;
         Disk disk;
         struct { int dark; int light; } score;
         Bool flipping;
@@ -64,6 +66,8 @@ typedef struct {
  */
 typedef void (*FlipDiskFunc)(Board* board, Square* square, int disk, Bool first, void* user_data);
 
+typedef void (*SquareVisitor)(Board* board, Square* square, void* user_data);
+
 /* Limits for board size. */
 #define BOARD_SIZE_MIN  4
 #define BOARD_SIZE_MAX 98
@@ -82,6 +86,8 @@ void     oth_board_free         (Board* board);
 void     oth_board_reset        (Board* board);
 
 void     oth_board_flip_disks   (Board* board, Square* square, FlipDiskFunc flip_disk, void* user_data);
+
+void     oth_board_for_each_square   (Board* board, SquareVisitor visitor, void* user_data);
 
 Square*  oth_board_square       (Board* board, int name);
 

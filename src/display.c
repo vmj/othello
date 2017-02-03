@@ -84,6 +84,9 @@ GLfloat light_specular[] = { 1.00, 1.00, 1.00, 1.0 };
 
 GLfloat disk_shininess = 128.0;
 
+void __oth_display_disk(Board* board, Square* square, void* user_data);
+void __oth_display_selection(Board* board, Square* square, void* user_data);
+
 /**
  * Initialize display "subsystem"
  */
@@ -289,12 +292,9 @@ oth_display_reset()
 void
 oth_display(void)
 {
-        Flipper *p;
-        int rank, file, x1, x2, z1, z2, i;
         GLint mode[1];
         Board* board = current_board;
         Camera* camera = current_camera;
-        Square* square = NULL;
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -319,98 +319,103 @@ oth_display(void)
 
                 glCallList(BOARD);
 
-                for (rank = 0; rank < board->ranks; ++rank)
-                {
-                        for (file = 0; file < board->files; ++file)
-                        {
-                                square = board(board, rank, file);
-
-                                if (square->disk == EMPTY)
-                                        continue;
-
-                                glPushMatrix();
-
-                                /* Move to next square */
-                                glTranslatef(rank * SQUARESIZE, 0.0,
-                                             file * SQUARESIZE);
-
-                                /* Draw disk (flipping) */
-                                if (square->flipping == true)
-                                {
-                                        p = square->flipper;
-                                        glTranslatef(p->translation.x,
-                                                     p->translation.y,
-                                                     p->translation.z);
-                                        glRotatef(p->rotation.a,
-                                                  p->rotation.x,
-                                                  p->rotation.y,
-                                                  p->rotation.z);
-                                        glMaterialfv(GL_FRONT, GL_DIFFUSE,
-                                                     p->diffuse);
-                                }
-                                /* Draw disk (stationary) */
-                                else
-                                {
-                                        if (square->disk == BLACK)
-                                        {
-                                                glMaterialfv(GL_FRONT,
-                                                             GL_DIFFUSE,
-                                                             dark_diffuse);
-                                        }
-                                        else
-                                        {       /* WHITE */
-                                                glMaterialfv(GL_FRONT,
-                                                             GL_DIFFUSE,
-                                                             light_diffuse);
-                                        }
-                                }
-
-                                glCallList(DISK);
-
-                                glPopMatrix();
-                        }
-                }
-
+                oth_board_for_each_square(board, __oth_display_disk, NULL);
         }
-        else
-        {                       /* mode[0] == GL_SELECTION */
-
-                /* Draw selection squares */
-                for (rank = 0; rank < board->ranks; ++rank)
-                {
-                        x1 = rank * SQUARESIZE;
-                        x2 = x1 + SQUARESIZE;
-
-                        for (file = 0; file < board->files; ++file)
-                        {
-                                square = board(board, rank, file);
-
-                                if (square->disk != EMPTY)
-                                        continue;
-                                if (oth_shift_current() == LIGHT && square->score.light == 0)
-                                        continue;
-                                if (oth_shift_current() == DARK && square->score.dark == 0)
-                                        continue;
-
-                                z1 = file * SQUARESIZE;
-                                z2 = z1 + SQUARESIZE;
-
-                                glPushName(square->name);
-                                glBegin(GL_POLYGON);
-                                glVertex3f(x1, -DISKHEIGHT / 2, z1);
-                                glVertex3f(x1, -DISKHEIGHT / 2, z2);
-                                glVertex3f(x2, -DISKHEIGHT / 2, z2);
-                                glVertex3f(x2, -DISKHEIGHT / 2, z1);
-                                glEnd();
-                                glPopName();
-                        }
-                }
-
+        else /* mode[0] == GL_SELECTION */
+        {
+                oth_board_for_each_square(board, __oth_display_selection, NULL);
         }
 
         glPopMatrix();
         glutSwapBuffers();
 }                               /* oth_display */
+
+void
+__oth_display_disk(Board* board, Square* square, void* user_data)
+{
+        Flipper *p;
+
+        if (square->disk == EMPTY)
+                return;
+
+        glPushMatrix();
+
+        /* Move to next square */
+        glTranslatef(square->rank * SQUARESIZE, 0.0,
+                     square->file * SQUARESIZE);
+
+        /* Draw disk (flipping) */
+        if (square->flipping == true)
+        {
+                p = square->flipper;
+                glTranslatef(p->translation.x,
+                             p->translation.y,
+                             p->translation.z);
+                glRotatef(p->rotation.a,
+                          p->rotation.x,
+                          p->rotation.y,
+                          p->rotation.z);
+                glMaterialfv(GL_FRONT, GL_DIFFUSE,
+                             p->diffuse);
+        }
+        /* Draw disk (stationary) */
+        else
+        {
+                if (square->disk == BLACK)
+                {
+                        glMaterialfv(GL_FRONT,
+                                     GL_DIFFUSE,
+                                     dark_diffuse);
+                }
+                else
+                {       /* WHITE */
+                        glMaterialfv(GL_FRONT,
+                                     GL_DIFFUSE,
+                                     light_diffuse);
+                }
+        }
+
+        glCallList(DISK);
+
+        glPopMatrix();
+}
+
+void
+__oth_display_selection(Board* board, Square* square, void* user_data)
+{
+        int x1, x2, z1, z2;
+        float y;
+
+        if (square->disk != EMPTY)
+                return;
+        switch (oth_shift_current()) {
+                case DARK:
+                        if (square->score.dark == 0)
+                                return;
+                        break;
+                case LIGHT:
+                        if (square->score.light == 0)
+                                return;
+                        break;
+                default: /* INITIAL or NONE */
+                        return;
+        }
+
+        x1 = square->rank * SQUARESIZE;
+        x2 = x1 + SQUARESIZE;
+        z1 = square->file * SQUARESIZE;
+        z2 = z1 + SQUARESIZE;
+        y = (float) -DISKHEIGHT / 2;
+
+        glPushName(square->name);
+        glBegin(GL_POLYGON);
+        glVertex3f(x1, y, z1);
+        glVertex3f(x1, y, z2);
+        glVertex3f(x2, y, z2);
+        glVertex3f(x2, y, z1);
+        glEnd();
+        glPopName();
+}
 
 /**
  * GLUT callback to recalculate viewport.

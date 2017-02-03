@@ -30,6 +30,7 @@ static unsigned char precision;
 static Flipper stepper;
 
 void __oth_flippers_flip_disks(Board* board, Square* square, int disk, Bool first, void* user_data);
+void __oth_flippers_game_over(Board* board, Square* square, void* user_data);
 
 /**
  * Initialize flippers "subsystem".
@@ -125,20 +126,21 @@ oth_flippers_reset()
                 flippers[i].rotation.z = 1.0f;
                 for (j = 0; j < 3; ++j)
                 {
-                        if (oth_shift_current() == DARK)
-                        {
-                                /* We're going to flip light to dark */
-                                flippers[i].diffuse[j] = light_diffuse[j];
-                        }
-                        else if (oth_shift_current() == LIGHT)
-                        {
-                                /* We're going to flip dark to light */
-                                flippers[i].diffuse[j] = dark_diffuse[j];
-                        }
-                        else
-                        {       /* NONE (Game Over) */
-                                flippers[0].diffuse[j] = light_diffuse[j];
-                                flippers[1].diffuse[j] = dark_diffuse[j];
+                        switch (oth_shift_current()) {
+                                case INITIAL:
+                                        break;
+                                case DARK:
+                                        /* We're going to flip light to dark */
+                                        flippers[i].diffuse[j] = light_diffuse[j];
+                                        break;
+                                case LIGHT:
+                                        /* We're going to flip dark to light */
+                                        flippers[i].diffuse[j] = dark_diffuse[j];
+                                        break;
+                                case NONE:
+                                        flippers[0].diffuse[j] = light_diffuse[j];
+                                        flippers[1].diffuse[j] = dark_diffuse[j];
+                                        break;
                         }
                 }
         }
@@ -278,57 +280,50 @@ __oth_flippers_flip_disks(Board* board, Square* square, int disk, Bool first, vo
 }
 
 void
-oth_flippers_game_over(Board* board)
-{
-        int darks, lights;
-        int rank, file;
-        Square *square = NULL;
+oth_flippers_game_over(Board* board) {
+        struct {
+            int blacks;
+            int whites;
+        } score;
 
-        darks = board->blacks;
-        lights = board->whites;
+        score.blacks = board->blacks;
+        score.whites = board->whites;
 
         oth_flippers_reset();
+        oth_board_for_each_square(board, __oth_flippers_game_over, &score);
+}
 
-        for (rank = 0; rank < board->ranks; ++rank)
-        {
-                for (file = 0; file < board->files; ++file)
-                {
-                        square = board(board, rank, file);
-                        switch (square->disk)
-                        {
-                                case EMPTY:
-                                        break;
-                                case BLACK:
-                                        if (darks == 0)
-                                        {
-                                                /* turn it to light */
-                                                square->disk = WHITE;
-                                                square->flipping = true;
-                                                square->flipper = &flippers[1];
-                                                lights--;
-                                        }
-                                        else
-                                        {
-                                                /* just count it */
-                                                darks--;
-                                        }
-                                break;
-                                case WHITE:
-                                        if (darks > 0)
-                                        {
-                                                /* turn it to dark */
-                                                square->disk = BLACK;
-                                                square->flipping = true;
-                                                square->flipper = &flippers[0];
-                                                darks--;
-                                        }
-                                        else
-                                        {
-                                                /* just count it */
-                                                lights--;
-                                        }
-                                break;
+void
+__oth_flippers_game_over(Board* board, Square* square, void* user_data) {
+        struct {
+            int blacks;
+            int whites;
+        } *score = user_data;
+
+        switch (square->disk) {
+                case BLACK:
+                        if (score->blacks == 0) {
+                                /* turn it to light */
+                                square->disk = WHITE;
+                                square->flipping = true;
+                                square->flipper = &flippers[1];
+                                score->whites--;
+                        } else {
+                                /* just count it */
+                                score->blacks--;
                         }
-                }
+                break;
+                case WHITE:
+                        if (score->blacks > 0) {
+                                /* turn it to dark */
+                                square->disk = BLACK;
+                                square->flipping = true;
+                                square->flipper = &flippers[0];
+                                score->blacks--;
+                        } else {
+                                /* just count it */
+                                score->whites--;
+                        }
+                break;
         }
 }

@@ -3,12 +3,11 @@
 #include "common.h"
 #include "board.h"
 
-void __board_update_scores(Board* board, int rank, int file);
-void __board_update_scores(Board* board, int rank, int file);
-void __board_update_scores_d(Board* board, int rank, int file, int r_inc,
-                                    int f_inc);
-void __board_flip_disks_d(Board* board, int disk, int rank, int file, int r_inc, int f_inc,
-                          FlipDiskFunc flip_disk, void* user_data);
+void __oth_board_reset(Board* board, Square* square, void* user_data);
+
+void __board_update_scores(Board* board, Square* square);
+void __board_update_scores_d(Board* board, Square* square, int r_inc, int f_inc);
+void __board_flip_disks_d(Board* board, Square* orig_square, int r_inc, int f_inc, FlipDiskFunc flip_disk, void* user_data);
 
 /**
  * Initialize board "subsystem".
@@ -86,6 +85,8 @@ oth_board_init(int *argc, char **argv)
         while (--i >= 0)
         {
                 squares[i].name = i;
+                squares[i].rank = rank(board, i);
+                squares[i].file = file(board, i);
                 squares[i].disk = EMPTY;
         }
 
@@ -118,76 +119,65 @@ oth_board_free(Board* board)
  *
  */
 void
-oth_board_reset(Board* board)
-{
-        register int rank, file;
-        Square *square = NULL;
-        int best_score_d = 0, best_score_l = 0;
+oth_board_reset(Board* board) {
+    /* Reset "bests" */
+    board->best_dark = board->best_light = oth_board_square(board, 0);
 
-        /* Reset "bests" */
-        board->best_dark = board->best_light = NULL;
+    board->blacks = 0;
+    board->whites = 0;
 
-        board->blacks = 0;
-        board->whites = 0;
+    oth_board_for_each_square(board, __oth_board_reset, NULL);
+}
 
-        for (rank = 0; rank < board->ranks; ++rank)
-        {
-                for (file = 0; file < board->files; ++file)
-                {
-                        square = board(board, rank, file);
-                        square->flipping = false;
-                        square->score.light = 0;
-                        square->score.dark = 0;
+void
+__oth_board_reset(Board* board, Square* square, void* user_data) {
+    square->flipping = false;
+    square->score.light = 0;
+    square->score.dark = 0;
 
-                        /* Update scores and "bests" */
-                        if (square->disk == EMPTY)
-                        {
-                                __board_update_scores(board, rank, file);
+    /* Update scores and "bests" */
+    switch (square->disk) {
+        case EMPTY:
+            __board_update_scores(board, square);
 
-                                if (square->score.dark > best_score_d)
-                                {
-                                        board->best_dark = square;
-                                        best_score_d = square->score.dark;
-                                }
-                                if (square->score.light > best_score_l)
-                                {
-                                        board->best_light = square;
-                                        best_score_l = square->score.light;
-                                }
-                        } else if (square->disk == BLACK) {
-                            board->blacks++;
-                        } else if (square->disk == WHITE) {
-                            board->whites++;
-                        }
-                }
-        }
+            if (square->score.dark > board->best_dark->score.dark)
+                board->best_dark = square;
+            if (square->score.light > board->best_light->score.light)
+                board->best_light = square;
+            break;
+        case BLACK:
+            board->blacks++;
+            break;
+        case WHITE:
+            board->whites++;
+            break;
+    }
 }
 
 /**
  * Helper function for above.
  */
 void
-__board_update_scores(Board* board, int rank, int file)
+__board_update_scores(Board* board, Square* square)
 {
-        __board_update_scores_d(board, rank, file, 1, 0);      /* N  */
-        __board_update_scores_d(board, rank, file, 1, 1);      /* NE */
-        __board_update_scores_d(board, rank, file, 0, 1);      /* E  */
-        __board_update_scores_d(board, rank, file, -1, 1);     /* SE */
-        __board_update_scores_d(board, rank, file, -1, 0);     /* S  */
-        __board_update_scores_d(board, rank, file, -1, -1);    /* SW */
-        __board_update_scores_d(board, rank, file, 0, -1);     /* W  */
-        __board_update_scores_d(board, rank, file, 1, -1);     /* NW */
+        __board_update_scores_d(board, square, 1, 0);      /* N  */
+        __board_update_scores_d(board, square, 1, 1);      /* NE */
+        __board_update_scores_d(board, square, 0, 1);      /* E  */
+        __board_update_scores_d(board, square, -1, 1);     /* SE */
+        __board_update_scores_d(board, square, -1, 0);     /* S  */
+        __board_update_scores_d(board, square, -1, -1);    /* SW */
+        __board_update_scores_d(board, square, 0, -1);     /* W  */
+        __board_update_scores_d(board, square, 1, -1);     /* NW */
 }
 
 /**
  * Helper function for above. Counts the score in one direction.
  */
 void
-__board_update_scores_d(Board* board, int rank, int file, int r_inc, int f_inc)
+__board_update_scores_d(Board* board, Square* square, int r_inc, int f_inc)
 {
-        Square *square = board(board, rank, file);
-        int r = rank + r_inc;
-        int f = file + f_inc;
+        int r = square->rank + r_inc;
+        int f = square->file + f_inc;
         int score_dark = 0, score_light = 0;
         Bool no_darks = true, no_lights = true;
 
@@ -230,44 +220,40 @@ __board_update_scores_d(Board* board, int rank, int file, int r_inc, int f_inc)
 void
 oth_board_flip_disks(Board* board, Square* square, FlipDiskFunc flip_disk, void* user_data)
 {
-        int disk = square->disk;
-        int rank = rank(board, square->name);
-        int file = file(board, square->name);
-
-        if (disk == EMPTY)
+        if (square->disk == EMPTY)
                 return;
 
-        __board_flip_disks_d(board, disk, rank, file, 1, 0, flip_disk, user_data);      /* N  */
-        __board_flip_disks_d(board, disk, rank, file, 1, 1, flip_disk, user_data);      /* NE */
-        __board_flip_disks_d(board, disk, rank, file, 0, 1, flip_disk, user_data);      /* E  */
-        __board_flip_disks_d(board, disk, rank, file, -1, 1, flip_disk, user_data);     /* SE */
-        __board_flip_disks_d(board, disk, rank, file, -1, 0, flip_disk, user_data);     /* S  */
-        __board_flip_disks_d(board, disk, rank, file, -1, -1, flip_disk, user_data);    /* SW */
-        __board_flip_disks_d(board, disk, rank, file, 0, -1, flip_disk, user_data);     /* W  */
-        __board_flip_disks_d(board, disk, rank, file, 1, -1, flip_disk, user_data);     /* NW */
+        __board_flip_disks_d(board, square, 1, 0, flip_disk, user_data);      /* N  */
+        __board_flip_disks_d(board, square, 1, 1, flip_disk, user_data);      /* NE */
+        __board_flip_disks_d(board, square, 0, 1, flip_disk, user_data);      /* E  */
+        __board_flip_disks_d(board, square, -1, 1, flip_disk, user_data);     /* SE */
+        __board_flip_disks_d(board, square, -1, 0, flip_disk, user_data);     /* S  */
+        __board_flip_disks_d(board, square, -1, -1, flip_disk, user_data);    /* SW */
+        __board_flip_disks_d(board, square, 0, -1, flip_disk, user_data);     /* W  */
+        __board_flip_disks_d(board, square, 1, -1, flip_disk, user_data);     /* NW */
 }
 
 /**
  * Helper function for above. Does it in one direction.
  */
 void
-__board_flip_disks_d(Board* board, int disk, int rank, int file, int r_inc, int f_inc, FlipDiskFunc flip_disk, void* user_data)
+__board_flip_disks_d(Board* board, Square* orig_square, int r_inc, int f_inc, FlipDiskFunc flip_disk, void* user_data)
 {
-        register int r = rank + r_inc;
-        register int f = file + f_inc;
+        register int r = orig_square->rank + r_inc;
+        register int f = orig_square->file + f_inc;
         Bool found = false;
-        Square *square = NULL;
+        Square* other = NULL;
 
         /* Find same color in direction (r_inc, f_inc) */
         while (r >= 0 && r < board->ranks && f >= 0 && f < board->files)
         {
-                square = board(board, r, f);
-                if (square->disk == disk)
+                other = board(board, r, f);
+                if (other->disk == orig_square->disk)
                 {
                         found = true;
                         break;  /* Got it! */
                 }
-                if (square->disk == EMPTY)
+                if (other->disk == EMPTY)
                         return; /* Found empty before same */
 
                 r += r_inc;
@@ -277,20 +263,34 @@ __board_flip_disks_d(Board* board, int disk, int rank, int file, int r_inc, int 
                 return;
 
         /* Flip disks */
-        r = rank + r_inc;
-        f = file + f_inc;
-        square = board(board, r, f);
+        r = orig_square->rank + r_inc;
+        f = orig_square->file + f_inc;
+        other = board(board, r, f);
         Bool first = true;
-        while (square->disk != disk)
+        while (other->disk != orig_square->disk)
         {
-                flip_disk(board, square, disk, first, user_data);
+                flip_disk(board, other, orig_square->disk, first, user_data);
 
                 r += r_inc;
                 f += f_inc;
-                square = board(board, r, f);
+                other = board(board, r, f);
                 first = false;
         }
 }
+
+void
+oth_board_for_each_square(Board* board, SquareVisitor visitor, void* user_data)
+{
+    int rank, file;
+    Square *square = NULL;
+    for (rank = 0; rank < board->ranks; ++rank) {
+        for (file = 0; file < board->files; ++file) {
+            square = board(board, rank, file);
+            visitor(board, square, user_data);
+        }
+    }
+}
+
 
 Square*
 oth_board_square(Board* board, int name)
