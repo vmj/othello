@@ -4,29 +4,7 @@
 #include "common.h"
 #include "board.h"
 
-/* Structure to control viewing parameters. Angles are relative to center of
- * the board and controlled via arrow keys.
- */
-typedef struct {
-        struct {
-                double fov, close, distant;
-        } frustum;
-        struct {
-                float v, h;
-        } angle;
-        struct {
-                float x, y, z;
-        } radius;
-        struct {
-                float x, y, z;
-        } eye;
-        struct {
-                float x, y, z;
-        } at;
-        struct {
-                float x, y, z;
-        } up;
-} Camera;
+typedef struct Camera Camera;
 
 Camera*   oth_camera_init    (Board* board,
                               int *argc,
